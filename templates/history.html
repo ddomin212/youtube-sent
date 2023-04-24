@@ -1,0 +1,93 @@
+{% extends "layout.html" %} {% block title %}Index{% endblock %} {% block
+content %} {% for item in history %}
+<div class="container">
+  <div class="card shadow d-flex border-start-info py-2" style="height: 140px">
+    <div class="card-body">
+      <div
+        class="row justify-content-between align-items-center no-gutters"
+        style="height: 80px"
+      >
+        <div class="col-auto col-xxl-8">
+          <div class="row">
+            <div class="col">
+              <h1 style="font-size: 25px; color: rgb(35, 51, 169)">
+                {{item["video_info"][0]}}
+              </h1>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col">
+              <h1 style="font-size: 25px; margin-top: 15px">
+                <form method="POST" action="/search" onsubmit="showSpinner()">
+                  <a
+                    class="btn btn-primary btn-icon-split"
+                    role="button"
+                    href="{{url_for('show', video_id=item['video_id'])}}"
+                    style="height: 34px"
+                    ><span class="text-white-50 icon"
+                      ><i class="fas fa-eye"></i></span
+                    ><span class="text-white text">Show</span></a
+                  >
+                  <input
+                    class="d-none"
+                    type="hidden"
+                    name="url"
+                    value="{{'https://www.youtube.com/watch?v=' + item['video_id']}}"
+                  />
+                  <button
+                    class="btn btn-success btn-icon-split"
+                    type="submit"
+                    style="margin-left: 17px; height: 34px"
+                  >
+                    <span class="text-white-50 icon"
+                      ><i class="fas fa-spinner"></i></span
+                    ><span class="text-black text">Update</span>
+                  </button>
+                </form>
+              </h1>
+            </div>
+          </div>
+        </div>
+        <div class="col-auto col-xxl-2 d-none d-xl-block">
+          <div class="card shadow border-start-primary py-2">
+            <div class="card-body">
+              <div class="row align-items-center no-gutters">
+                <div class="col me-2">
+                  <div class="text-uppercase text-primary fw-bold text-xs mb-1">
+                    <span>Neutral</span>
+                  </div>
+                  <div class="text-dark fw-bold h5 mb-0">
+                    <span>{{item["pred_counts"]["false"]}}</span>
+                  </div>
+                </div>
+                <div class="col-auto">
+                  <i class="far fa-thumbs-up fa-2x text-gray-300"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-auto col-xxl-2 d-none d-lg-block">
+          <div class="card shadow border-start-primary py-2">
+            <div class="card-body">
+              <div class="row align-items-center no-gutters">
+                <div class="col me-2">
+                  <div class="text-uppercase text-primary fw-bold text-xs mb-1">
+                    <span style="color: rgb(223, 78, 78)">Negative</span>
+                  </div>
+                  <div class="text-dark fw-bold h5 mb-0">
+                    <span>{{item["pred_counts"]["true"]}}</span>
+                  </div>
+                </div>
+                <div class="col-auto">
+                  <i class="far fa-thumbs-down fa-2x text-gray-300"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %} {% endblock %}

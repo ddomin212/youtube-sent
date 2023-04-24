@@ -1,0 +1,12 @@
+{% extends "base.html" %} {% block title %}Index{% endblock %} {% block content
+%}
+<div class="container-fluid">
+  <div class="text-center mt-5">
+    <div class="mx-auto">
+      <p class="m-0">{{status_code}}</p>
+    </div>
+    <p class="text-black-50 mb-0">{{error_message}}</p>
+    <a href="/">← Back to Dashboard</a>
+  </div>
+</div>
+{% endblock %}

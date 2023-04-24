@@ -1,0 +1,10 @@
+redis
+Flask
+firebase-admin
+flask-session
+stripe
+kaggle
+pandas
+numpy
+google-api-python-client
+gunicorn

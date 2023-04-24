@@ -1,0 +1,100 @@
+{% extends "layout.html" %} {% block title %}Index{% endblock %} {% block
+content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card shadow border-start-success py-2">
+        <div class="card-body">
+          <div class="row align-items-center no-gutters">
+            <div class="col me-2">
+              <div class="text-uppercase text-success fw-bold text-xs mb-1">
+                <span style="font-size: 24px"
+                  ><span style="text-decoration: underline"
+                    >Free tier</span
+                  ></span
+                >
+              </div>
+              <div class="text-dark fw-bold h5 mb-0">
+                <ul>
+                  <li>
+                    <span style="font-weight: normal !important"
+                      >300 comments maximum</span
+                    >
+                  </li>
+                  <li>
+                    <span style="font-weight: normal !important"
+                      >1 video per week</span
+                    >
+                  </li>
+                  <li>
+                    <span style="font-weight: normal !important"
+                      >No questions</span
+                    >
+                  </li>
+                  <li>
+                    <span style="font-weight: normal !important"
+                      >No export options</span
+                    >
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-auto">
+              <i class="far fa-meh-rolling-eyes fa-2x text-gray-300"></i>
+            </div>
+          </div>
+          <div style="text-align: center; margin-top: 12px">
+            <a
+              class="btn btn-secondary btn-icon-split"
+              role="button"
+              style="text-align: center"
+              ><span class="text-white-50 icon"
+                ><i class="fas fa-arrow-right"></i></span
+              ><span class="text-white text">0 $ per month</span></a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card shadow border-start-success py-2">
+        <div class="card-body">
+          <div class="row align-items-center no-gutters">
+            <div class="col me-2">
+              <div class="text-uppercase text-success fw-bold text-xs mb-1">
+                <span style="font-size: 24px; color: rgb(255, 0, 0)"
+                  ><span style="text-decoration: underline"
+                    >Pro tier</span
+                  ></span
+                >
+              </div>
+              <div class="text-dark fw-bold h5 mb-0">
+                <ul>
+                  <li>Unlimited comment processing</li>
+                  <li>Unlimited video quota</li>
+                  <li>Question highlighting</li>
+                  <li>Comment export</li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+            </div>
+          </div>
+          <div style="text-align: center">
+            <a
+              class="btn btn-danger btn-icon-split"
+              role="button"
+              style="margin-top: 12px"
+              href="/payment"
+              ><span class="text-white-50 icon"
+                ><i class="fas fa-credit-card"></i></span
+              ><span class="text-white text">5 $ per month</span></a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

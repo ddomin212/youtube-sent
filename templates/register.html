@@ -1,0 +1,153 @@
+{% extends "base.html" %} {% block title %}Register{% endblock %} {% block
+content %}
+<div class="container">
+  <div class="card shadow-lg o-hidden border-0 my-5">
+    <div class="card-body p-0">
+      <div class="row">
+        <div class="col-lg-5 d-none d-lg-flex">
+          <div class="flex-grow-1 bg-register-image" style=" background-image:
+          url('{{url_for("static",
+          filename='/img/wordcloud-679951_960_720.png')}}') " >
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <div class="p-5">
+          <div class="text-center">
+            <h4 class="text-dark mb-4">Create an Account!</h4>
+          </div>
+          <!-- <form class="user" method="POST" action="">
+            <div class="mb-3">
+              <input
+                class="form-control form-control-user"
+                type="email"
+                id="exampleInputEmail"
+                aria-describedby="emailHelp"
+                placeholder="Email Address"
+                name="email"
+              />
+            </div>
+            <div class="row mb-3">
+              <div class="col-sm-12 mb-6 mb-sm-0">
+                <input
+                  class="form-control form-control-user"
+                  type="password"
+                  id="examplePasswordInput"
+                  placeholder="Password"
+                  name="password"
+                />
+              </div>
+            </div>
+            <button
+              class="btn btn-primary d-block btn-user w-100"
+              type="submit"
+              style="color: rgb(255, 255, 255); background: #000000"
+            >
+              Register Account
+            </button>
+            <hr />
+            
+          </form> -->
+          <a
+            class="btn btn-primary d-block btn-google btn-user w-100 mb-2"
+            role="button"
+            id="loginGoogle"
+            href="/register/google"
+            ><i class="fab fa-google"></i>&nbsp; Register with Google</a
+          >
+          <div class="text-center">
+            <a class="small" href="/login">Already have an account? Login!</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.4.1/firebase-app.js";
+  import {
+    getAuth,
+    GoogleAuthProvider,
+    signInWithRedirect,
+    getRedirectResult,
+    signInWithPopup,
+    signOut,
+  } from "https://www.gstatic.com/firebasejs/9.4.1/firebase-auth.js";
+
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyA9YS74xcdXRqQvjcN8wV4rFbfUSm5Z66o",
+    authDomain: "app-59016.firebaseapp.com",
+    projectId: "app-59016",
+    storageBucket: "app-59016.appspot.com",
+    messagingSenderId: "435983319984",
+    appId: "1:435983319984:web:e92dc3805edc4e03540c75",
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider(app);
+
+  async function postAPI(str) {
+    console.log("hit");
+    const response = await fetch("http://localhost:5000/register/google", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(str),
+    });
+    const data = await response.json();
+    console.log(data);
+  }
+  async function setSession(email, password, name, user) {
+    const idTokenResult = await user.getIdTokenResult();
+    const tier = idTokenResult.claims.tier;
+    console.log(tier);
+    const result = await fetch("/api/set-session", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+        name: name,
+        type: "google",
+        tier: tier || "free",
+      }),
+    });
+    window.location.replace("/dashboard");
+  }
+  loginGoogle.addEventListener("click", (e) => {
+    e.preventDefault();
+    // sign in with popup tab
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        // The signed-in user info.
+        const user = result.user;
+        console.log(user);
+        const gmail = user.email;
+        const name = user.displayName;
+        const gpassword = user.uid;
+        setSession(gmail, gpassword, name, user);
+      })
+      .catch((error) => {
+        // Handle Errors here.
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // The email of the user's account used.
+        const email = error.email;
+        // The AuthCredential type that was used.
+        const credential = GoogleAuthProvider.credentialFromError(error);
+        // ...
+
+        alert(errorMessage);
+      });
+  });
+</script>
+{% endblock %}

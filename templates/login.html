@@ -1,0 +1,173 @@
+{% extends "base.html" %} {% block title %}Index{% endblock %} {% block content
+%}
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-md-9 col-lg-12 col-xl-10">
+      <div class="card shadow-lg o-hidden border-0 my-5">
+        <div class="card-body p-0">
+          <div class="row">
+            <div class="col-lg-6 d-none d-lg-flex">
+              <div class="flex-grow-1 bg-login-image" style=" background-image:
+              url('{{url_for("static",
+              filename='/img/cms-g1a7911432_1920.jpg')}}') " >
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="p-5">
+              <div class="text-center"></div>
+              <!-- <form class="user" method="POST">
+                <div class="mb-3">
+                  <input
+                    class="form-control form-control-user"
+                    type="email"
+                    id="exampleInputEmail"
+                    aria-describedby="emailHelp"
+                    placeholder="Enter Email Address..."
+                    name="email"
+                  />
+                </div>
+                <div class="mb-3">
+                  <input
+                    class="form-control form-control-user"
+                    type="password"
+                    id="exampleInputPassword"
+                    placeholder="Password"
+                    name="password"
+                  />
+                </div>
+                <div class="mb-3">
+                  <div class="custom-control custom-checkbox small">
+                    <div class="form-check">
+                      <input
+                        class="form-check-input custom-control-input"
+                        type="checkbox"
+                        id="formCheck-1"
+                      /><label
+                        class="form-check-label custom-control-label"
+                        for="formCheck-1"
+                        >Remember Me</label
+                      >
+                    </div>
+                  </div>
+                </div>
+                <button
+                  id="loginWithEmail"
+                  class="btn btn-primary d-block btn-user w-100"
+                  type="submit"
+                  style="color: rgb(255, 255, 255); background: #000000"
+                >
+                  Login
+                </button>
+                <hr />
+                
+              </form> -->
+              <a
+                id="loginGoogle"
+                class="btn btn-primary d-block btn-google btn-user w-100 mb-2"
+                role="button"
+                ><i class="fab fa-google"></i>&nbsp; Login with Google</a
+              >
+              <hr />
+              <div class="text-center">
+                <a class="small" href="/forgot-password">Forgot Password?</a>
+              </div>
+              <div class="text-center">
+                <a class="small" href="/register">Create an Account!</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/9.4.1/firebase-app.js";
+  import {
+    getAuth,
+    signInWithEmailAndPassword,
+    signInWithPopup,
+    GoogleAuthProvider,
+  } from "https://www.gstatic.com/firebasejs/9.4.1/firebase-auth.js";
+
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyA9YS74xcdXRqQvjcN8wV4rFbfUSm5Z66o",
+    authDomain: "app-59016.firebaseapp.com",
+    projectId: "app-59016",
+    storageBucket: "app-59016.appspot.com",
+    messagingSenderId: "435983319984",
+    appId: "1:435983319984:web:e92dc3805edc4e03540c75",
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const provider = new GoogleAuthProvider(app);
+
+  async function setSession(email, password, name, type, user) {
+    const idTokenResult = await user.getIdTokenResult();
+    const tier = idTokenResult.claims.tier;
+    const result = await fetch("/api/set-session", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+        name: name,
+        type: type,
+        tier: tier || "free",
+      }),
+    });
+    window.location.replace("/dashboard");
+  }
+  loginWithEmail.addEventListener("click", (e) => {
+    e.preventDefault();
+    const email = document.getElementById("exampleInputEmail").value;
+    const password = document.getElementById("exampleInputPassword").value;
+
+    signInWithEmailAndPassword(auth, email, password)
+      .then((result) => {
+        setSession(email, password, "User", "email", result.user);
+      })
+      .catch((error) => {
+        // Handle Errors here.
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // ...
+        alert(errorMessage);
+      });
+  });
+  loginGoogle.addEventListener("click", (e) => {
+    e.preventDefault();
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        // The signed-in user info.
+        const user = result.user;
+        const gmail = user.email;
+        const gpassword = user.uid;
+        const gname = user.displayName;
+        setSession(gmail, gpassword, gname, "google", user);
+      })
+      .catch((error) => {
+        // Handle Errors here.
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        // The email of the user's account used.
+        const email = error.email;
+        // The AuthCredential type that was used.
+        const credential = GoogleAuthProvider.credentialFromError(error);
+        // ...
+
+        alert(errorMessage);
+      });
+  });
+</script>
+
+{% endblock %}

@@ -1,0 +1,706 @@
+{% extends "layout.html" %} {% block title %}Index{% endblock %} {% block
+content %} {% if not first %}
+<div class="container" id="dashwrap">
+  <div class="row d-inline align-items-center">
+    <div class="col-lg-12 col-xl-12 col-xxl-12">
+      <div class="card shadow mb-4">
+        <div
+          class="card-header d-flex justify-content-between align-items-center"
+        >
+          <h6 class="text-primary fw-bold m-0">
+            <br /><strong
+              ><span
+                style="color: rgba(var(--bs-dark-rgb), var(--bs-text-opacity))"
+                >{{video_info[0]}}</span
+              ></strong
+            ><span
+              style="
+                font-weight: normal !important;
+                color: rgba(var(--bs-dark-rgb), var(--bs-text-opacity));
+              "
+              >&nbsp;by {{video_info[1]}}</span
+            ><br /><br />
+          </h6>
+          <div class="dropdown no-arrow">
+            <button
+              class="btn btn-link btn-sm dropdown-toggle"
+              aria-expanded="false"
+              data-bs-toggle="dropdown"
+              type="button"
+            >
+              <i class="fas fa-ellipsis-v text-gray-400"></i>
+            </button>
+            <div
+              class="dropdown-menu shadow dropdown-menu-end animated--fade-in"
+            >
+              <p class="text-center dropdown-header">dropdown header:</p>
+              <a class="dropdown-item" href="#">&nbsp;Action</a
+              ><a class="dropdown-item" href="#">&nbsp;Another action</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="#">&nbsp;Something else here</a>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="ratio ratio-16x9">
+            <iframe src="{{ full_url }}"></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container">
+  <div class="row">
+    <div class="col-md-3">
+      <div class="card shadow border-start-warning py-2">
+        <div class="card-body">
+          <div class="row align-items-center no-gutters">
+            <div class="col me-2">
+              <div
+                class="text-uppercase text-warning fw-bold text-xs mb-1"
+                style="color: var(--bs-white)"
+              >
+                <span style="color: rgb(0, 55, 255)">neutral</span>
+              </div>
+              <div class="text-dark fw-bold h5 mb-0">
+                <span>{{pred_counts[0]}}</span>
+              </div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-equals fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card shadow border-start-warning py-2">
+        <div class="card-body">
+          <div class="row align-items-center no-gutters">
+            <div class="col me-2">
+              <div class="text-uppercase text-warning fw-bold text-xs mb-1">
+                <span style="color: var(--bs-danger)">negative</span>
+              </div>
+              <div class="text-dark fw-bold h5 mb-0">
+                <span>{{pred_counts[1]}}</span>
+              </div>
+            </div>
+            <div class="col-auto">
+              <i class="far fa-thumbs-down fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card shadow border-start-warning py-2">
+        <div class="card-body">
+          <div class="row align-items-center no-gutters">
+            <div class="col me-2">
+              <div
+                class="text-uppercase text-warning fw-bold text-xs mb-1"
+                style="color: var(--bs-white)"
+              >
+                <span style="color: rgb(0, 0, 0)">ratio</span>
+              </div>
+              <div class="text-dark fw-bold h5 mb-0">
+                <span>{{"%.2f"|format(pred_counts[0] / pred_counts[1])}}</span>
+              </div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-slash fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card shadow border-start-primary py-2">
+        <div class="card-body">
+          <div class="row align-items-center no-gutters">
+            <div class="col me-2">
+              <div class="text-uppercase text-primary fw-bold text-xs mb-1">
+                <span>Questions</span>
+              </div>
+              <div class="text-dark fw-bold h5 mb-0">
+                <span>{{quest_counts[1]}}</span>
+              </div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-question fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container-fluid">
+  <div
+    class="d-sm-flex justify-content-between align-items-center mb-4"
+    style="margin-top: 24px"
+  >
+    <h3 class="text-dark mb-0"></h3>
+    <div class="card shadow mb-4">
+      <div
+        class="card-header d-flex justify-content-between align-items-center"
+      >
+        <h6 class="text-primary fw-bold m-0">Top comments by Youtube</h6>
+        <!-- <div class="dropdown no-arrow">
+          <button
+            class="btn btn-link btn-sm dropdown-toggle"
+            aria-expanded="false"
+            data-bs-toggle="dropdown"
+            type="button"
+          >
+            <i class="fas fa-ellipsis-v text-gray-400"></i>
+          </button>
+          <div class="dropdown-menu shadow dropdown-menu-end animated--fade-in">
+            <p class="text-center dropdown-header">dropdown header:</p>
+            <a class="dropdown-item" href="#">&nbsp;Action</a
+            ><a class="dropdown-item" href="#">&nbsp;Another action</a>
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">&nbsp;Something else here</a>
+          </div>
+        </div> -->
+      </div>
+      <div class="card-body">
+        <div class="carousel slide" data-bs-ride="false" id="carousel-1">
+          <div class="carousel-inner">
+            {% for c in range(carousels) %} {% if c == 0 %}
+            <div class="carousel-item active">
+              {% else %}
+              <div class="carousel-item">
+                {% endif %}
+                <div class="row">
+                  {% for i in range(items) %}
+                  <div class="col-sm-auto col-lg-4">
+                    <div class="card">
+                      <div class="card-body">
+                        <h4 class="card-title">
+                          <a
+                            href="{{comments[items*c+i]['comment_author_url']}}"
+                            >{{comments[items*c+i]['comment_author']}}</a
+                          >
+                        </h4>
+                        <p class="card-text">
+                          {{comments[items*c+i]['comment_text'][0:140] + "..."}}
+                        </p>
+                      </div>
+                      <a
+                        class="card-link"
+                        style="margin-bottom: 10px; margin-left: 10px"
+                        href="https://www.youtube.com/watch?v={{video_id}}c&lc={{comments[items*c+i]['comment_id']}}"
+                        >Reply</a
+                      >
+                      {% if comments[items*c+i]['comment_sentiment'] == 0 %}
+                      <div
+                        class="card-footer d-flex justify-content-between align-items-center"
+                      >
+                        <div class="col-auto">
+                          <i class="fas fa-equals fa-2x text-gray-300"></i>
+                        </div>
+                      </div>
+                      {% else %}
+                      <div
+                        class="card-footer d-flex justify-content-between align-items-center"
+                      >
+                        <div class="col-auto">
+                          <i class="far fa-thumbs-down fa-2x text-gray-300"></i>
+                        </div>
+                      </div>
+                      {% endif %}
+                    </div>
+                  </div>
+
+                  {% endfor %}
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          <div>
+            <a
+              class="carousel-control-prev"
+              href="#carousel-1"
+              role="button"
+              data-bs-slide="prev"
+              ><span class="carousel-control-prev-icon"></span
+              ><span class="visually-hidden">Previous</span></a
+            ><a
+              class="carousel-control-next"
+              href="#carousel-1"
+              role="button"
+              data-bs-slide="next"
+              ><span class="carousel-control-next-icon"></span
+              ><span class="visually-hidden">Next</span></a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col">
+      <div class="row">
+        <div class="col-lg-6 col-xl-6 col-xxl-6">
+          <div class="card shadow mb-4">
+            <div
+              class="card-header d-flex justify-content-between align-items-center"
+            >
+              <h6 class="text-primary fw-bold m-0">Comments to reply to...</h6>
+            </div>
+            <div class="card-body" style="min-height: 400px">
+              <div class="carousel slide" data-bs-ride="false" id="carousel-3">
+                <div class="carousel-inner">
+                  {% for c in range(carousels) %} {% if c == 0 %}
+                  <div class="carousel-item active">
+                    {% else %}
+                    <div class="carousel-item">
+                      {% endif %}
+                      <div class="row">
+                        {% for i in range(items-1) %}
+                        <div class="card" style="min-height: 250px">
+                          <div class="card-body">
+                            <h4 class="card-title">
+                              <a
+                                href="{{questions[items*c+i]['comment_author_url']}}"
+                                >{{questions[items*c+i]['comment_author']}}</a
+                              >
+                            </h4>
+                            <h6 class="text-muted card-subtitle mb-2">
+                              {{questions[items*c+i]['comment_published_at'][0:10]}}
+                            </h6>
+                            <p class="card-text" style="margin-bottom: 20px">
+                              {{questions[items*c+i]['comment_text'][0:140] +
+                              "..."}}
+                            </p>
+                            <a
+                              class="card-link"
+                              href="https://www.youtube.com/watch?v={{video_id}}c&lc={{questions[items*c+i]['comment_id']}}"
+                              >Reply</a
+                            >
+                            {% if questions[items*c+i]['comment_sentiment'] == 0
+                            %}
+                            <div
+                              class="card-footer d-flex justify-content-between align-items-center"
+                            >
+                              <div class="col-auto">
+                                <i
+                                  class="fas fa-equals fa-2x text-gray-300"
+                                ></i>
+                              </div>
+                            </div>
+                            {% else %}
+                            <div
+                              class="card-footer d-flex justify-content-between align-items-center"
+                            >
+                              <div class="col-auto">
+                                <i
+                                  class="far fa-thumbs-down fa-2x text-gray-300"
+                                ></i>
+                              </div>
+                            </div>
+                            {% endif %}
+                          </div>
+                        </div>
+                        {% endfor %}
+                      </div>
+                    </div>
+                    {% endfor %}
+                  </div>
+                </div>
+                <div>
+                  <a
+                    class="carousel-control-prev"
+                    href="#carousel-3"
+                    role="button"
+                    data-bs-slide="prev"
+                    style="width: 50px"
+                    ><span class="carousel-control-prev-icon"></span
+                    ><span class="visually-hidden">Previous</span></a
+                  ><a
+                    class="carousel-control-next"
+                    href="#carousel-3"
+                    role="button"
+                    data-bs-slide="next"
+                    style="width: 50px"
+                    ><span class="carousel-control-next-icon"></span
+                    ><span class="visually-hidden">Next</span></a
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6 col-xl-6">
+            <div class="card shadow mb-4">
+              <div
+                class="card-header d-flex justify-content-between align-items-center"
+              >
+                <h6 class="text-primary fw-bold m-0">Sentiment graph</h6>
+              </div>
+              <div class="card-body d-flex justify-content-center">
+                <div>
+                  <canvas
+                    id="pieChart"
+                    style="width: 250px; height: 365px"
+                  ></canvas>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-12 col-xl-12 col-xxl-12">
+          {% if session.get('user')['tier'] == 'premium' %}
+          <div class="card shadow mb-4">
+            <div
+              class="card-header d-flex justify-content-between align-items-center"
+            >
+              <h6 class="text-primary fw-bold m-0">Negative comments</h6>
+            </div>
+            <div class="card-body">
+              <div class="carousel slide" data-bs-ride="false" id="carousel-2">
+                <div class="carousel-inner">
+                  {% for c in range(((negatives|length) / 3)|round|int) %} {% if
+                  c == 0 %}
+                  <div class="carousel-item active">
+                    {% else %}
+                    <div class="carousel-item">
+                      {% endif %}
+                      <div class="row">
+                        {% for i in range(items) %}{% if negatives[items*c+i] %}
+                        <div class="col-sm-auto col-lg-4">
+                          <div
+                            class="card"
+                            style="
+                              @media only screen and (max-width: 400px) {
+                                body {
+                                  height: 120px;
+                                }
+                              }
+                            "
+                          >
+                            <div class="card-body">
+                              <h4 class="card-title">
+                                <a
+                                  href="{{negatives[items*c+i]['comment_author_url']}}"
+                                  >{{negatives[items*c+i]['comment_author']}}</a
+                                >
+                              </h4>
+                              <p class="card-text">
+                                {{negatives[items*c+i]['comment_text'][0:140] +
+                                "..."}}
+                              </p>
+                            </div>
+                            <a
+                              class="card-link"
+                              style="margin-bottom: 10px; margin-left: 10px"
+                              href="https://www.youtube.com/watch?v={{video_id}}c&lc={{negatives[items*c+i]['comment_id']}}"
+                              >Reply</a
+                            >
+                            <div
+                              class="card-footer d-flex justify-content-between align-items-center"
+                            >
+                              <div class="col-auto">
+                                <i
+                                  class="far fa-thumbs-down fa-2x text-gray-300"
+                                ></i>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        {% endif %} {% endfor %}
+                      </div>
+                    </div>
+                    {% endfor %}
+                  </div>
+                </div>
+                <div>
+                  <a
+                    class="carousel-control-prev"
+                    href="#carousel-2"
+                    role="button"
+                    data-bs-slide="prev"
+                    ><span class="carousel-control-prev-icon"></span
+                    ><span class="visually-hidden">Previous</span></a
+                  ><a
+                    class="carousel-control-next"
+                    href="#carousel-2"
+                    role="button"
+                    data-bs-slide="next"
+                    ><span class="carousel-control-next-icon"></span
+                    ><span class="visually-hidden">Next</span></a
+                  >
+                </div>
+              </div>
+            </div>
+            {% endif %} {% if session.get('user')['tier'] == 'premium' %}
+            <div class="card shadow mb-4">
+              <div
+                class="card-header d-flex justify-content-between align-items-center"
+              >
+                <h6 class="text-primary fw-bold m-0">Save</h6>
+                <div class="dropdown no-arrow">
+                  <button
+                    class="btn btn-link btn-sm dropdown-toggle"
+                    aria-expanded="false"
+                    data-bs-toggle="dropdown"
+                    type="button"
+                  >
+                    <i class="fas fa-ellipsis-v text-gray-400"></i>
+                  </button>
+                  <div
+                    class="dropdown-menu shadow dropdown-menu-end animated--fade-in"
+                  >
+                    <p class="text-center dropdown-header">dropdown header:</p>
+                    <a class="dropdown-item" href="#">&nbsp;Action</a
+                    ><a class="dropdown-item" href="#">&nbsp;Another action</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#"
+                      >&nbsp;Something else here</a
+                    >
+                  </div>
+                </div>
+              </div>
+              <div class="card-body">
+                <div>
+                  <select
+                    style="
+                      padding-top: 1px;
+                      padding-bottom: 3px;
+                      padding-right: 15px;
+                      padding-left: 7px;
+                    "
+                    id="export-type"
+                  >
+                    <optgroup label="export-type">
+                      <option value="xlsx" selected="">Excel</option>
+                      <option value="csv">CSV</option>
+                      <option value="json">JSON</option>
+                    </optgroup></select
+                  ><button
+                    class="btn btn-primary btn-sm d-none d-sm-inline-block"
+                    style="margin-left: 12px"
+                    onclick="sendExport()"
+                    id="generate-report"
+                  >
+                    <i
+                      class="fas fa-download fa-sm text-white-50"
+                      style="font-size: 20px"
+                    ></i
+                    >&nbsp;Generate Report
+                  </button>
+                  <script
+                    src="https://apis.google.com/js/platform.js"
+                    async
+                    defer
+                  >
+                    {parsetags: 'explicit'}
+                  </script>
+                  <p>
+                    <a id="gdrive-report">or save to <u>Google Drive</u> </a>
+                  </p>
+                  <div id="savetodrive-div"></div>
+                  <script>
+                    function renderSaveToDrive() {
+                      gapi.savetodrive.render("savetodrive-div", {
+                        src: "//localhost:5000/static/generated/{{user_email}}/dataset/data.csv",
+                        filename: "data.csv",
+                        sitename: "CommentWiz",
+                      });
+                    }
+                    document
+                      .getElementById("gdrive-report")
+                      .addEventListener("click", renderSaveToDrive);
+                  </script>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+        {% if session.get('user')['tier'] == 'premium' %}
+        <div class="row">
+          <div class="col">
+            <div class="card shadow mb-4">
+              <div
+                class="card-header d-flex justify-content-between align-items-center"
+              >
+                <h6 class="text-primary fw-bold m-0">
+                  Weekly sentiment on comments
+                </h6>
+              </div>
+              <div class="card-body">
+                <div style="width: 100%" id="canvas-parent">
+                  <canvas id="barChart"></canvas>
+                </div>
+                <div class="text-center small mt-4">
+                  <button
+                    class="btn btn-primary btn-sm d-none d-sm-inline-block"
+                    style="margin-left: 12px"
+                    onclick="initBarChart('Week')"
+                  >
+                    Weekly
+                  </button>
+                  <button
+                    class="btn btn-secondary btn-sm d-none d-sm-inline-block"
+                    style="margin-left: 12px"
+                    onclick="initBarChart('Month')"
+                  >
+                    Monthly
+                  </button>
+                  <button
+                    class="btn btn-dark btn-sm d-none d-sm-inline-block"
+                    style="margin-left: 12px"
+                    onclick="initBarChart('Year')"
+                  >
+                    Yearly
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.bundle.min.js"></script>
+
+        <script></script>
+        <script>
+          async function getWeeks(type) {
+            try {
+              const response = await fetch("/api/bar-chart", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  video_id: "{{video_id}}",
+                  video_info: "{{video_info[2]}}",
+                  type: type,
+                }),
+              });
+              const resp = await response.json();
+              const data = resp.data;
+              return data;
+            } catch (error) {
+              console.log(error);
+            }
+          }
+
+          function sendExport() {
+            const selection = document.getElementById("export-type").value;
+            console.log("here");
+            const request = fetch(`/api/export/${selection}`, {
+              method: "GET",
+            })
+              .then((response) => {
+                if (!response.ok) {
+                  throw new Error("Network response was not ok");
+                }
+                return response.blob();
+              })
+              .then((blob) => {
+                // Create a URL for the blob
+                const url = window.URL.createObjectURL(blob);
+
+                // Create a link to download the file
+                const link = document.createElement("a");
+                link.href = url;
+                link.download = `comments.${selection}`;
+                document.body.appendChild(link);
+
+                // Click the link to download the file
+                link.click();
+
+                // Remove the link from the DOM
+                document.body.removeChild(link);
+              })
+              .catch((error) => {
+                console.error("Error:", error);
+              });
+          }
+
+          const piectx = document.getElementById("pieChart").getContext("2d");
+          const pieChart = new Chart(piectx, {
+            type: "pie",
+            options: {
+              responsive: false,
+            },
+            data: {
+              labels: ["Neutral", "Negative"],
+              datasets: [
+                {
+                  label: "data",
+                  data: ["{{pred_counts[0]}}", "{{pred_counts[1]}}"],
+                  backgroundColor: ["lightblue", "lightred"],
+                  borderColor: "gray",
+                  borderWidth: 1,
+                },
+              ],
+            },
+          });
+          async function initBarChart(type, first = false) {
+            const barData = await getWeeks(type);
+            console.log(barData);
+            if (first == false) {
+              const canvasParent = document.getElementById("canvas-parent");
+              const oldCanvas = document.getElementById("barChart");
+
+              // Remove the old canvas element from the DOM
+              canvasParent.removeChild(oldCanvas);
+
+              // Create a new canvas element and set its id to "barChart"
+              const newCanvas = document.createElement("canvas");
+              newCanvas.id = "barChart";
+
+              // Add the new canvas element to the parent container
+              canvasParent.appendChild(newCanvas);
+            }
+            const barctx = document.getElementById("barChart").getContext("2d");
+            const barChart = new Chart(barctx, {
+              type: "bar",
+              options: {
+                responsive: true,
+              },
+              data: {
+                labels: [
+                  type + " 1",
+                  type + " 2",
+                  type + " 3",
+                  type + " 4 and beyond",
+                ],
+                datasets: [
+                  {
+                    label: "Neutral",
+                    data: Object.values(barData).map((val) => val[0]),
+                    backgroundColor: "lightblue",
+                    borderColor: "black",
+                    borderWidth: 1,
+                  },
+                  {
+                    label: "Negative",
+                    data: Object.values(barData).map((val) => val[1]),
+                    backgroundColor: "lightred",
+                    borderColor: "black",
+                    borderWidth: 1,
+                  },
+                ],
+              },
+            });
+          }
+          initBarChart("Week", true);
+        </script>
+        {% else %}
+        <div class="container text-center">
+          <h1 style="font-size: xx-large">
+            Search for the video you want to analyze
+          </h1>
+        </div>
+        {% endif %} {% endblock %}
+      </div>
+    </div>
+  </div>
+</div>

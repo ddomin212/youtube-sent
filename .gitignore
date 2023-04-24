@@ -1,0 +1,5 @@
+/youtube_env
+/__pycache__
+Dockerfile
+.dockerignore
+/static/generated

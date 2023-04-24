@@ -1,0 +1,5 @@
+{
+  "appService.defaultWebAppToDeploy": "undefined/subscriptions/09fd1655-0439-46ec-9659-021442d338c0/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/youtube-sent-app",
+  "appService.deploySubpath": ".",
+  "appService.zipIgnorePattern": ["youtube_env{,/**}", ".vscode{,/**}", ".env"]
+}
