@@ -1,5 +1,9 @@
 /youtube_env
 /__pycache__
+/config/app.json
+/config/firebase.json
 Dockerfile
 .dockerignore
+.env
+kaggle.json
 /static/generated
