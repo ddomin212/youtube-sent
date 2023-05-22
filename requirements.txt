@@ -1,5 +1,5 @@
 redis
-Flask
+Flask==2.2.3
 firebase-admin
 flask-session
 stripe
