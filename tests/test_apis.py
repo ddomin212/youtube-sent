@@ -19,7 +19,7 @@ def test_sessionController(context):
     print(response.data)
     assert b"Session set successfully" in response.data
 
-def test_chartController(context, user_session):
+def test_chartController(context, user_session, history_entry):
     # Create a mock request object
     request = MagicMock()
     request.json = {
@@ -31,18 +31,7 @@ def test_chartController(context, user_session):
     db = MagicMock()
 
     db.collection.return_value.where.return_value.where.return_value.stream.return_value = [
-        MagicMock(to_dict=lambda: {
-            "uid": "user123",
-            "video_id": "123",
-            "questions": "[]",
-            "comments": "[]",
-            "negatives": "[]",
-            "weeks": "[]",
-            "months": "[]",
-            "years": "[]",
-            "quest_counts": "[]",
-            "pred_counts": "[]"
-        })
+        MagicMock(to_dict=lambda: history_entry)
     ]
 
     # Call the function and check the response
