@@ -19,10 +19,10 @@ def get_sentiment(comments, folder_name, first_time):
                            == item["comment_id"]].negative.values
         quest = predictions[predictions["comment_id"]
                             == item["comment_id"]].questions.values
-        item["comment_sentiment"] = sent[0] if sent else 0
-        if sent and sent[0] == 1:
+        item["comment_sentiment"] = sent[0] if sent.size > 0 else 0
+        if sent.size > 0 and sent[0] == 1:
             negatives.append(item)
-        if quest and quest[0] == 1:
+        if quest.size > 0 and quest[0] == 1:
             questions.append(item)
     return quest_counts, pred_counts, negatives, questions
 

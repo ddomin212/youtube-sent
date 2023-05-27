@@ -2,12 +2,9 @@ from flask import (
     Flask,
     render_template,
     request,
-    jsonify,
     session,
     redirect,
     url_for,
-    g,
-    send_file,
 )
 from config.init_app import config_app
 from firebase_admin import auth

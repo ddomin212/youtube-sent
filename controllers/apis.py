@@ -57,6 +57,7 @@ def chartController(request, db):
 def exportController(method):
     user_email = session["user"]["uid"]
     df = pd.read_csv(f"static/generated/{user_email}/dataset/data.csv")
+    print(df)
     if df.empty:
         return (
             render_template(

@@ -168,13 +168,16 @@ content %} {% if not first %}
       <div class="card-body">
         <div class="carousel slide" data-bs-ride="false" id="carousel-1">
           <div class="carousel-inner">
-            {% for c in range(carousels) %} {% if c == 0 %}
+            {% set calc = (comments|length // items) + 1 %}
+            {% for c in range(carousels if carousels < calc else calc) %} {% if c == 0 %}
             <div class="carousel-item active">
               {% else %}
               <div class="carousel-item">
                 {% endif %}
                 <div class="row">
                   {% for i in range(items) %}
+                  {% set index = items*c+i %}
+                  {% if index < comments|length %}
                   <div class="col-sm-auto col-lg-4">
                     <div class="card">
                       <div class="card-body">
@@ -213,7 +216,7 @@ content %} {% if not first %}
                       {% endif %}
                     </div>
                   </div>
-
+                  {% endif %}
                   {% endfor %}
                 </div>
               </div>
@@ -259,6 +262,8 @@ content %} {% if not first %}
                       {% endif %}
                       <div class="row">
                         {% for i in range(items-1) %}
+                        {% set index = items*c+i %}
+                        {% if index < comments|length %}
                         <div class="card" style="min-height: 250px">
                           <div class="card-body">
                             <h4 class="card-title">
@@ -303,6 +308,7 @@ content %} {% if not first %}
                             {% endif %}
                           </div>
                         </div>
+                        {% endif %}
                         {% endfor %}
                       </div>
                     </div>

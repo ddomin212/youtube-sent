@@ -7,3 +7,4 @@ Dockerfile
 .env
 kaggle.json
 /static/generated
+/ytbs

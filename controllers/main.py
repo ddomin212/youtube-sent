@@ -13,7 +13,6 @@ def indexController():
 
 
 def dashController():
-    print(session["user"])
     return render_template("dash.html", first=True)
 
 

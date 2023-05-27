@@ -15,7 +15,7 @@ def paymentController(stripe, url):
         cancel_url=f"{url}/cancel",
     )
     session.get("user")["verificationToken"] = payment_session.id
-    print(session["user"])
+    print(payment_session.id)
     return redirect(payment_session.url)
 
 
