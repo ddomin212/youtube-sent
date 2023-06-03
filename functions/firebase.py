@@ -2,11 +2,41 @@ from .youtube.scrape_helpers import get_weeks
 from utils.npenc import NpEncoder
 import json
 
+def get_user_videos(session, request, db):
+    """
+    Retrieves the user's video history for a given video ID and type.
+
+    Args:
+        session (dict): The user's session data.
+        request (flask.Request): The HTTP request object.
+        db (google.cloud.firestore.client.Client): The Firestore client instance.
+
+    Returns:
+        tuple: A tuple containing the user's video history document and the video type.
+    """
+    user_uid = session["user"]["uid"]
+    video_id = request.json["video_id"]
+    typ = request.json["typ"]
+    history = (
+        db.collection("history")
+        .where("uid", "==", user_uid)
+        .where("video_id", "==", video_id)
+        .stream()
+    )
+    doc = [doc.to_dict() for doc in history][0]
+    return doc, typ
 
 def add_to_firebase(data, video_id, user_uid, db):
-    # Get a reference to the document collection
+    """
+    Adds a video document to Firestore for a given video ID and user ID.
+
+    Args:
+        data (dict): The video history data to add.
+        video_id (str): The ID of the video being watched.
+        user_uid (str): The ID of the user requesting the addition.
+        db (google.cloud.firestore.client.Client): The Firestore client instance.
+    """
     users_ref = db.collection("history")
-    # Create a document
     doc_ref = users_ref.document(f"{str(video_id)}|{str(user_uid)}")
     print(data)
     doc_ref.set(data)
@@ -23,6 +53,18 @@ def upload_firebase(
     negatives,
     comments,
 ):
+    """
+    Uploads video data to Firestore for a given video ID and user email.
+
+    Args:
+        video_info (dict): The video information to upload.
+        user_email (str): The email of the user watching the video.
+        video_id (str): The ID of the video being watched.
+        db (google.cloud.firestore.client.Client): The Firestore client instance.
+        pred_counts (dict): The prediction counts for the video.
+        quest_counts (dict): The question counts for the video.
+        questions (list): The list of questions asked during the video.
+    """
     weeks, max_diff = get_weeks(comments, video_info[2], 7)
     months, _ = get_weeks(comments, video_info[2], 30)
     years, _ = get_weeks(comments, video_info[2], 365)

@@ -4,6 +4,12 @@ import subprocess
 
 
 def init_kaggle(user_email):
+    """
+    Initializes a Kaggle notebook for the given user email.
+
+    Args:
+        user_email (str): The email of the user to initialize the notebook for.
+    """
     if not os.path.isdir("static/generated"):
         os.mkdir("static/generated")
     os.mkdir(f"static/generated/{user_email}")
@@ -13,6 +19,12 @@ def init_kaggle(user_email):
 
 
 def init_dataset(user_email):
+    """
+    Initializes a Kaggle dataset for the given user email.
+
+    Args:
+        user_email (str): The email of the user to initialize the dataset for.
+    """
     os.mkdir(f"static/generated/{user_email}/dataset")
     kaggle_metadata = {
         "title": f"youtube-sent-{user_email}",
@@ -26,6 +38,12 @@ def init_dataset(user_email):
 
 
 def init_kernel(user_email):
+    """
+    Initializes a Kaggle kernel for the given user email.
+
+    Args:
+        user_email (str): The email of the user to initialize the kernel for.
+    """
     os.mkdir(f"static/generated/{user_email}/kernel")
     kaggle_metadata = {
         "id": f"dandominko/youtube-{user_email}",

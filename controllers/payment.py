@@ -2,6 +2,17 @@ from flask import redirect, session, render_template
 
 
 def paymentController(stripe, url):
+    """
+    Given a Stripe object and a URL, creates a new payment session for a subscription
+    and redirects the user to the Stripe checkout page.
+
+    Args:
+        stripe (stripe): The Stripe object to use for payment session creation.
+        url (str): The URL to redirect the user to after payment.
+
+    Returns:
+        Response: A Flask response object redirecting the user to the Stripe checkout page.
+    """
     payment_session = stripe.checkout.Session.create(
         mode="subscription",
         payment_method_types=["card"],
@@ -20,6 +31,18 @@ def paymentController(stripe, url):
 
 
 def successController(auth, request):
+    """
+    Given an auth object and a Flask request object containing a payment session ID,
+    verifies the payment session ID and updates the user's custom claims if successful,
+    or returns an error message if unsuccessful.
+
+    Args:
+        auth (google.cloud.auth): The auth object to use for user custom claims updates.
+        request (flask.Request): The Flask request object containing the payment session ID.
+
+    Returns:
+        Tuple[str, int]: A tuple containing a rendered success message and an HTTP status code.
+    """
     payment_session_id = request.args.get("session_id")
     print(session["user"])
     if payment_session_id != session["user"]["verificationToken"]:

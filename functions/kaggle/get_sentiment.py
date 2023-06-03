@@ -4,6 +4,15 @@ import subprocess
 
 
 def get_sentiment(comments, folder_name, first_time):
+    """
+    Given a the comments on a YouTube video, return comments tagged with sentiment and their respective counts.
+
+    Args:
+        text (str): The text to analyze.
+
+    Returns:
+        str: The sentiment of the text.
+    """
     # run the bash script
     subprocess.run(['bash', 'functions/kaggle/kaggle.sh', folder_name, first_time])
     # continue with Python code

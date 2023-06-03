@@ -4,9 +4,19 @@ import json
 
 
 def historyController(db):
+    """
+    Given a database object, retrieves the user's history data and returns a
+    response containing the history page template with the retrieved data.
+
+    Args:
+        db (google.cloud.firestore.client.Client): The database object to use for history data retrieval.
+
+    Returns:
+        Response: A Flask response object containing the history page template
+        with the retrieved data.
+    """
     user_uid = session["user"]["uid"]
-    history = db.collection("history").where("uid", "==", user_uid).stream()
-    history = [doc.to_dict() for doc in history]
+    history = [doc.to_dict() for doc in db.collection("history").where("uid", "==", user_uid).stream()]
     json_columns = [
         "questions",
         "comments",
@@ -15,21 +25,30 @@ def historyController(db):
         "quest_counts",
         "pred_counts",
     ]
-    for doc, col in itertools.product(history, json_columns):
-        doc[col] = json.loads(doc[col])
+    history = [{col: json.loads(doc.get(col, "[]")) if col in json_columns else doc.get(col) for col in doc.keys()} for doc in history]
     return render_template("history.html", history=history)
 
 
 def showController(db, video_id):
+    """
+    Given a database object and a video ID, retrieves the user's history data for
+    the specified video and returns a response containing the show page template
+    with the retrieved data.
+
+    Args:
+        db (google.cloud.firestore.client.Client): The database object to use for history data retrieval.
+        video_id (str): The ID of the video to retrieve history data for.
+
+    Returns:
+        Response: A Flask response object containing the show page template with
+        the retrieved data.
+    """
     user_uid = session["user"]["uid"]
     new_url = f"https://www.youtube.com/embed/{video_id}"
-    history = (
-        db.collection("history")
-        .where("uid", "==", user_uid)
-        .where("video_id", "==", video_id)
-        .stream()
-    )
-    doc = [doc.to_dict() for doc in history][0]
+    doc = [doc.to_dict() for doc in  (db.collection("history")
+                                    .where("uid", "==", user_uid)
+                                    .where("video_id", "==", video_id)
+                                    .stream())][0]
     json_columns = [
         "questions",
         "comments",

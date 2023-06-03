@@ -1,16 +1,24 @@
 from googleapiclient.discovery import build
 from functions.youtube.scrape_helpers import *
+import os
 
 all_comments = []
-API_URL = (
-    "https://api-inference.huggingface.co/models/s-nlp/roberta_toxicity_classifier"
-)
-headers = {"Authorization": "Bearer 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"}
-
 
 def get_comments(video_id):
-    # Replace YOUR_API_KEY with your actual API key
-    gapi_key = "AIzaSyA9YS74xcdXRqQvjcN8wV4rFbfUSm5Z66o"
+    """
+    Given a YouTube video ID, retrieves the top-level comments for the video and returns
+    them along with the video's title, description, and publish date.
+
+    Args:
+        video_id (str): The ID of the YouTube video to scrape.
+
+    Returns:
+        Tuple[List[Dict[str, Any]], Tuple[str, str, str]]: A tuple containing a list of
+        dictionaries representing the top-level comments for the video, and a tuple
+        containing the video's title, description, and publish date.
+    """
+
+    gapi_key = os.getenv("GAPI_KEY")
 
     # Create a youtube resource object
     youtube = build("youtube", "v3", developerKey=gapi_key)
@@ -22,7 +30,12 @@ def get_comments(video_id):
 
 def get_comments_helper(youtube, video_id, token=""):
     """
-    Recursive function that retrieves the comments (top-level ones) a given video has.
+    Recursive function that retrieves the top-level comments for a given YouTube video.
+
+    Args:
+        youtube (Any): The YouTube resource object.
+        video_id (str): The ID of the YouTube video to scrape.
+        token (str, optional): The token to use when retrieving comments. Defaults to "".
     """
 
     global all_comments

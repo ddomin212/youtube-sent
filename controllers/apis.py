@@ -1,9 +1,21 @@
 from flask import jsonify, session, send_file, render_template
+from functions.firebase import get_user_videos
 import json
 import pandas as pd
 
 
 def sessionController(request):
+    """
+    Given a Flask request object containing a JSON payload with user information,
+    sets the user's session and returns a response indicating success.
+
+    Args:
+        request (flask.Request): The Flask request object containing the JSON payload.
+
+    Returns:
+        Tuple[Response, int]: A tuple containing a Flask response object and an
+        HTTP status code.
+    """
     name = request.json["name"]
     uid = request.json["password"]
     email = request.json["email"]
@@ -22,18 +34,18 @@ def sessionController(request):
 
 
 def chartController(request, db):
-    # comments = request.json['comments'].replace("&#39;", '"')
-    user_uid = session["user"]["uid"]
-    # video_date = int(request.json['video_info'])
-    video_id = request.json["video_id"]
-    typ = request.json["typ"]
-    history = (
-        db.collection("history")
-        .where("uid", "==", user_uid)
-        .where("video_id", "==", video_id)
-        .stream()
-    )
-    doc = [doc.to_dict() for doc in history][0]
+    """
+    Given a Flask request object and a database object, retrieves the user's video
+    data and returns a response containing the requested chart data.
+
+    Args:
+        request (flask.Request): The Flask request object.
+        db (google.cloud.firestore.client.Client): The database object.
+
+    Returns:
+        Response: A Flask response object containing the requested chart data.
+    """
+    doc, typ = get_user_videos(session, request, db)
     json_columns = [
         "questions",
         "comments",
@@ -55,9 +67,20 @@ def chartController(request, db):
 
 
 def exportController(method):
+    """
+    Given a string indicating the export method, exports the user's comments to the
+    specified format and returns a response containing the exported data, so that the user
+    can download it.
+
+    Args:
+        method (str): The export method to use.
+
+    Returns:
+        Union[Response, Tuple[str, int]]: A Flask response object containing the
+        exported data, or a tuple containing an error message and an HTTP status code.
+    """
     user_email = session["user"]["uid"]
     df = pd.read_csv(f"static/generated/{user_email}/dataset/data.csv")
-    print(df)
     if df.empty:
         return (
             render_template(
