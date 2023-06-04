@@ -1,6 +1,19 @@
-from .youtube.scrape_helpers import get_weeks
-from utils.npenc import NpEncoder
+"""
+This module contains functions for interacting with Firebase and retrieving user video history.
+
+Functions:
+- get_user_videos(session, request, db): Retrieves the user's video history 
+                                        for a given video ID and type.
+- add_to_firebase(data, video_id, user_uid, db): Adds data to Firebase for a 
+                                                given video ID and user ID.
+"""
+
 import json
+from utils.npenc import NpEncoder
+from .youtube.scrape_helpers import get_weeks
+
+
+
 
 def get_user_videos(session, request, db):
     """

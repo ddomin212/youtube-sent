@@ -1,3 +1,14 @@
+"""
+Handles user authentication for the Flask application.
+
+This module contains functions for registering new users and logging in existing users.
+
+Functions:
+    registerController: Creates a new user and redirects to the login 
+                        page if successful, or returns an error message if unsuccessful.
+    loginController: Logs the user in if successful, or returns an error message if unsuccessful.
+"""
+
 from flask import render_template, redirect, session
 
 

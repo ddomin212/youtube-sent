@@ -1,6 +1,17 @@
+"""
+Main module for the Flask application.
+
+This module contains the main controllers for the Flask application, 
+including the index, dashboard, and search controllers. 
+
+Functions:
+    indexController: Renders the index or dashboard template depending on whether the user is logged in.
+    dashController: Renders the dashboard template with the first-time user flag set to True.
+    searchController: Given a Flask request object and a database object, 
+                    retrieves the comments and sentiment analysis data for a
+                    YouTube video specified in the request.
+"""
 from flask import session, render_template, g
-import os
-import pandas as pd
 from functions import get_comments, get_sentiment
 from functions.firebase import upload_firebase
 from functions.data import check_first_time, save_comments_to_csv

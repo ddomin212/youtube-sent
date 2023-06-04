@@ -1,5 +1,15 @@
-import numpy as np
+"""
+Custom JSON encoder for NumPy data types.
+
+This module contains a custom JSON encoder class `NpEncoder` 
+that extends the default JSONEncoder to handle NumPy data types.
+
+Classes:
+    NpEncoder: A custom JSON encoder class that can handle NumPy data types.
+"""
 import json
+import numpy as np
+
 
 class NpEncoder(json.JSONEncoder):
     """

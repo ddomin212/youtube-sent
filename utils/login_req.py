@@ -1,5 +1,16 @@
-from flask import session, render_template
+"""
+Handles user authentication for Flask routes.
+
+This module contains a decorator 
+function for checking if the user is logged in.
+
+Functions:
+    login_required: A decorator function that checks if the user is logged in.
+"""
+
 from functools import wraps
+from flask import session, render_template
+
 
 def login_required(f):
     """
@@ -15,7 +26,9 @@ def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if not session.get('user'):
-            render_template(
-                'message.html', error_message="Unauthorized - not logged in", status_code=401), 401
+            return render_template(
+                'message.html', 
+                error_message="Unauthorized - not logged in",
+                status_code=401), 401
         return f(*args, **kwargs)
     return decorated_function

@@ -1,3 +1,12 @@
+"""
+Handles payment processing for the Flask application.
+
+This module contains a function for creating a new payment session for a subscription and redirecting the user to the Stripe checkout page.
+
+Functions:
+    paymentController: Given a Stripe object and a URL, creates a new payment session 
+                        for a subscription and redirects the user to the Stripe checkout page.
+"""
 from flask import redirect, session, render_template
 
 

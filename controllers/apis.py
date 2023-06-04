@@ -1,7 +1,20 @@
-from flask import jsonify, session, send_file, render_template
-from functions.firebase import get_user_videos
+"""
+Handles user sessions for the Flask application.
+
+This module contains functions for setting user sessions based on a JSON payload containing user information. 
+
+Functions:
+    sessionController: Sets the user's session based on a JSON payload containing user information.
+    chartController: Retrieves the user's video data and returns a response containing 
+                                                            the requested chart data.
+    exportController: Exports the user's comments to the specified format and returns a response 
+                                                                    containing the exported data.
+"""
 import json
 import pandas as pd
+from flask import jsonify, session, send_file, render_template
+from functions.firebase import get_user_videos
+
 
 
 def sessionController(request):

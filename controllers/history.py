@@ -1,7 +1,17 @@
-import itertools
-from flask import render_template, session
-import json
+"""
+Handles the user's video history for the Flask application.
 
+This module contains functions for retrieving the user's video history data 
+from the database and rendering the history page template with the retrieved data.
+
+Functions:
+    historyController: Given a database object, retrieves the user's history data and 
+                                        returns a response containing the history page 
+                                                    template with the retrieved data.
+"""
+
+import json
+from flask import render_template, session
 
 def historyController(db):
     """
@@ -9,14 +19,17 @@ def historyController(db):
     response containing the history page template with the retrieved data.
 
     Args:
-        db (google.cloud.firestore.client.Client): The database object to use for history data retrieval.
+        db (google.cloud.firestore.client.Client): The database object 
+                                    to use for history data retrieval.
 
     Returns:
         Response: A Flask response object containing the history page template
         with the retrieved data.
     """
     user_uid = session["user"]["uid"]
-    history = [doc.to_dict() for doc in db.collection("history").where("uid", "==", user_uid).stream()]
+    history = [doc.to_dict() for doc in (db.collection("history")
+                                         .where("uid", "==", user_uid)
+                                         .stream())]
     json_columns = [
         "questions",
         "comments",
@@ -25,7 +38,10 @@ def historyController(db):
         "quest_counts",
         "pred_counts",
     ]
-    history = [{col: json.loads(doc.get(col, "[]")) if col in json_columns else doc.get(col) for col in doc.keys()} for doc in history]
+    history = [{col: json.loads(doc.get(col, "[]"))
+                if col in json_columns else doc.get(col)
+                for col in doc.keys()}
+                for doc in history]
     return render_template("history.html", history=history)
 
 
@@ -36,7 +52,8 @@ def showController(db, video_id):
     with the retrieved data.
 
     Args:
-        db (google.cloud.firestore.client.Client): The database object to use for history data retrieval.
+        db (google.cloud.firestore.client.Client): The database object to use for 
+                                                            history data retrieval.
         video_id (str): The ID of the video to retrieve history data for.
 
     Returns:
