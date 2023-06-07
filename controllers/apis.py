@@ -1,7 +1,8 @@
 """
 Handles user sessions for the Flask application.
 
-This module contains functions for setting user sessions based on a JSON payload containing user information. 
+This module contains functions for setting user sessions based on a
+JSON payload containing user information. 
 
 Functions:
     sessionController: Sets the user's session based on a JSON payload containing user information.
@@ -12,12 +13,12 @@ Functions:
 """
 import json
 import pandas as pd
-from flask import jsonify, session, send_file, render_template
+from flask import jsonify, session, send_file, render_template, Request
+from google.cloud.firestore import Client
 from functions.firebase import get_user_videos
 
 
-
-def sessionController(request):
+def sessionController(request: Request):
     """
     Given a Flask request object containing a JSON payload with user information,
     sets the user's session and returns a response indicating success.
@@ -46,14 +47,14 @@ def sessionController(request):
     return jsonify({"message": "Session set successfully"}), 200
 
 
-def chartController(request, db):
+def chartController(request: Request, db: Client):
     """
     Given a Flask request object and a database object, retrieves the user's video
     data and returns a response containing the requested chart data.
 
     Args:
         request (flask.Request): The Flask request object.
-        db (google.cloud.firestore.client.Client): The database object.
+        db (google.cloud.firestore.Client): The database object.
 
     Returns:
         Response: A Flask response object containing the requested chart data.
@@ -79,7 +80,7 @@ def chartController(request, db):
         return jsonify({"data": doc["years"]})
 
 
-def exportController(method):
+def exportController(method: str):
     """
     Given a string indicating the export method, exports the user's comments to the
     specified format and returns a response containing the exported data, so that the user

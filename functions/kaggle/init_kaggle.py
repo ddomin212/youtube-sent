@@ -3,7 +3,7 @@ import os
 import subprocess
 
 
-def init_kaggle(user_email):
+def init_kaggle(user_email: str):
     """
     Initializes a Kaggle notebook for the given user email.
 
@@ -18,7 +18,7 @@ def init_kaggle(user_email):
     os.mkdir(f"static/generated/{user_email}/output")
 
 
-def init_dataset(user_email):
+def init_dataset(user_email: str):
     """
     Initializes a Kaggle dataset for the given user email.
 
@@ -33,11 +33,15 @@ def init_dataset(user_email):
     }
     json.dump(
         kaggle_metadata,
-        open(f"static/generated/{user_email}/dataset/dataset-metadata.json", "w"),
+        open(
+            f"static/generated/{user_email}/dataset/dataset-metadata.json",
+            "w",
+            encoding="utf-8",
+        ),
     )
 
 
-def init_kernel(user_email):
+def init_kernel(user_email: str):
     """
     Initializes a Kaggle kernel for the given user email.
 
@@ -60,9 +64,14 @@ def init_kernel(user_email):
         "competition_sources": [],
     }
     subprocess.run(
-        ["cp", "toxic.ipynb", f"static/generated/{user_email}/kernel/toxic.ipynb"]
+        ["cp", "toxic.ipynb", f"static/generated/{user_email}/kernel/toxic.ipynb"],
+        check=True,
     )
     json.dump(
         kaggle_metadata,
-        open(f"static/generated/{user_email}/kernel/kernel-metadata.json", "w"),
+        open(
+            f"static/generated/{user_email}/kernel/kernel-metadata.json",
+            "w",
+            encoding="utf-8",
+        ),
     )

@@ -11,10 +11,12 @@ Functions:
                     retrieves the comments and sentiment analysis data for a
                     YouTube video specified in the request.
 """
-from flask import session, render_template, g
+from flask import session, render_template, g, Request
+from google.cloud.firestore import Client
 from functions import get_comments, get_sentiment
 from functions.firebase import upload_firebase
 from functions.data import check_first_time, save_comments_to_csv
+
 
 def indexController():
     """
@@ -39,7 +41,8 @@ def dashController():
     """
     return render_template("dash.html", first=True)
 
-def searchController(request, db):
+
+def searchController(request: Request, db: Client):
     """
     Given a Flask request object and a database object, retrieves the comments and
     sentiment analysis data for a YouTube video specified in the request

@@ -7,10 +7,12 @@ Functions:
     paymentController: Given a Stripe object and a URL, creates a new payment session 
                         for a subscription and redirects the user to the Stripe checkout page.
 """
-from flask import redirect, session, render_template
+import stripe
+from flask import redirect, session, render_template, Request
+from firebase_admin import auth
 
 
-def paymentController(stripe, url):
+def paymentController(url: str):
     """
     Given a Stripe object and a URL, creates a new payment session for a subscription
     and redirects the user to the Stripe checkout page.
@@ -39,7 +41,7 @@ def paymentController(stripe, url):
     return redirect(payment_session.url)
 
 
-def successController(auth, request):
+def successController(fbauth: auth, request: Request):
     """
     Given an auth object and a Flask request object containing a payment session ID,
     verifies the payment session ID and updates the user's custom claims if successful,
@@ -62,8 +64,8 @@ def successController(auth, request):
             401,
         )
     try:
-        user = auth.get_user_by_email(session.get("user")["email"])
-        auth.set_custom_user_claims(user.uid, {"tier": "premium"})
+        user = fbauth.get_user_by_email(session.get("user")["email"])
+        fbauth.set_custom_user_claims(user.uid, {"tier": "premium"})
         session["user"]["tier"] = "premium"
     except Exception as e:
         print(e)

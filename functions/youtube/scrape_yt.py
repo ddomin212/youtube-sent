@@ -1,10 +1,13 @@
-from googleapiclient.discovery import build
-from functions.youtube.scrape_helpers import *
 import os
+from typing import Any, Dict, List
+from googleapiclient.discovery import build, Resource
+from functions.youtube.scrape_helpers import *
 
-all_comments = []
 
-def get_comments(video_id):
+all_comments: List[Dict[str, Any]] = []
+
+
+def get_comments(video_id: str):
     """
     Given a YouTube video ID, retrieves the top-level comments for the video and returns
     them along with the video's title, description, and publish date.
@@ -28,7 +31,7 @@ def get_comments(video_id):
     return (all_comments, video_info)
 
 
-def get_comments_helper(youtube, video_id, token=""):
+def get_comments_helper(youtube: Resource, video_id: str, token: str = ""):
     """
     Recursive function that retrieves the top-level comments for a given YouTube video.
 
@@ -39,7 +42,7 @@ def get_comments_helper(youtube, video_id, token=""):
     """
 
     global all_comments
-    totalReplyCount = 0
+    total_reply_count = 0
     token_reply = None
 
     if len(token.strip()) == 0:
@@ -97,10 +100,10 @@ def get_comments_helper(youtube, video_id, token=""):
             all_comments.append(comment_thread)
 
         # Get total reply count:
-        totalReplyCount = item["snippet"]["totalReplyCount"]
+        total_reply_count = item["snippet"]["totalReplyCount"]
 
         # If the comment has replies, get them:
-        if totalReplyCount > 0:
+        if total_reply_count > 0:
             # Get replies - first batch:
             replies_response = (
                 youtube.comments()

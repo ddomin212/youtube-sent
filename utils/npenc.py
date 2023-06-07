@@ -24,6 +24,7 @@ class NpEncoder(json.JSONEncoder):
     Returns:
         JSONEncoder: A custom JSON encoder class that can handle NumPy data types.
     """
+
     def default(self, obj):
         if isinstance(obj, np.integer):
             return int(obj)

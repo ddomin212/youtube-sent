@@ -9,17 +9,19 @@ Functions:
     loginController: Logs the user in if successful, or returns an error message if unsuccessful.
 """
 
-from flask import render_template, redirect, session
+from flask import render_template, redirect, session, Request
+from google.cloud.exceptions import GoogleCloudError
+from firebase_admin import auth
 
 
-def registerController(auth, request):
+def registerController(auth: auth, request: Request):
     """
     Given an auth object and a Flask request object containing user registration
     information, creates a new user and redirects to the login page if successful,
     or returns an error message if unsuccessful.
 
     Args:
-        auth (Any): The auth object to use for user creation.
+        auth (firebase_admin.auth): The auth object to use for user creation.
         request (flask.Request): The Flask request object containing the user registration
         information.
 
@@ -36,23 +38,23 @@ def registerController(auth, request):
     try:
         auth.create_user(email=email, password=password)
         return redirect("/login")
-    except Exception:
+    except GoogleCloudError:
         return (
             render_template(
                 "message.html", error_message="User creation failed", status_code=400
             ),
-            400
+            400,
         )
 
 
-def profileController(auth, request):
+def profileController(auth: auth, request: Request):
     """
     Given an auth object and a Flask request object containing user profile information,
     updates the user's profile and returns a response containing the updated profile
     information.
 
     Args:
-        auth (Any): The auth object to use for user profile updates.
+        auth (firebase_admin.auth): The auth object to use for user profile updates.
         request (flask.Request): The Flask request object containing the user profile information.
 
     Returns:
@@ -62,10 +64,10 @@ def profileController(auth, request):
         name = request.form.get("fullname")
         email = request.form.get("email")
         try:
-            user = auth.get_user_by_email(session.get("user")["email"])
+            user = auth.get_user_by_email(session["user"]["email"])
             auth.update_user(user.uid, display_name=name, email=email)
-        except Exception as e:
-            print(e)
+        except GoogleCloudError:
+            pass
         session["user"]["email"] = email
         session["user"]["name"] = name
     return render_template("profile.html", user=session["user"])

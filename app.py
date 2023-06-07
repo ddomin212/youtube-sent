@@ -18,7 +18,6 @@ from controllers.history import historyController, showController
 from controllers.apis import chartController, exportController, sessionController
 
 
-
 app = Flask(__name__)
 load_dotenv()
 db, url, admin_uid = config_app(app)
@@ -27,6 +26,7 @@ db, url, admin_uid = config_app(app)
 # ==============================
 # APIs
 # ==============================
+
 
 @app.route("/api/set-session", methods=["POST"])
 def set_session():
@@ -39,9 +39,9 @@ def set_session():
     return sessionController(request)
 
 
-@app.route("/api/export/<method>", methods=["GET"])
+@app.route("/api/export/<string:method>", methods=["GET"])
 @login_required
-def export(method):
+def export(method: str):
     """
     Exports data for the user in the specified format.
 
@@ -69,6 +69,7 @@ def bar_chart():
 # ==============================
 # ROUTES
 # ==============================
+
 
 @app.route("/")
 def index():
@@ -105,9 +106,9 @@ def history():
     return historyController(db)
 
 
-@app.route("/show/<video_id>", methods=["GET"])
+@app.route("/show/<string:video_id>", methods=["GET"])
 @login_required
-def show(video_id):
+def show(video_id: str):
     """
     Renders the video dashboard page for the specified video from a firebase document.
 
@@ -129,7 +130,7 @@ def create_checkout_session():
     Returns:
         The response from the paymentController function.
     """
-    return paymentController(stripe, url)
+    return paymentController(url)
 
 
 @app.route("/search", methods=["POST"])
@@ -217,6 +218,7 @@ def register():
 # ==============================
 # 404 ERROR
 # ==============================
+
 
 @app.errorhandler(404)
 def not_found(e):

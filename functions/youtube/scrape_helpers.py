@@ -1,8 +1,10 @@
-from datetime import datetime
 import re
+from typing import Any, Dict, List
+from datetime import datetime
+from googleapiclient.discovery import Resource
 
 
-def get_weeks(comments, video_unix, div):
+def get_weeks(comments: List[Dict[str, Any]], video_unix: int, div: int):
     """
     Given a list of comments (in dictionary format), a video release date (in Unix timestamp format),
     and a divisor, returns a tuple containing a dictionary of sentiment counts for each week after
@@ -21,8 +23,9 @@ def get_weeks(comments, video_unix, div):
     max_date = 0
     # compare comment release date to video release date and sort into weeks one to four
     for comment in comments:
-        max_date = max(max_date, convert_date_unix(comment["comment_published_at"]))
-        cw = get_week(video_unix, comment["comment_published_at"], div)
+        publish_unix = convert_date_unix(comment["comment_published_at"])
+        max_date = max(max_date, publish_unix)
+        cw = get_week(video_unix, publish_unix, div)
         if cw >= 0 and cw < 4:
             weeks[str(cw)] = (
                 (weeks[str(cw)][0] + 1, weeks[str(cw)][1])
@@ -33,17 +36,17 @@ def get_weeks(comments, video_unix, div):
             weeks["3"] = (weeks["3"][0] + 1, weeks["3"][1])
         else:
             weeks["3"] = (weeks["3"][0], weeks["3"][1] + 1)
-    return weeks, get_week(video_unix, max_date, div, maxi=True)
+    return weeks, get_week(video_unix, max_date, div)
 
 
-def get_week(video_release, comment_str, div, maxi=False):
+def get_week(video_release: int, comment_str_date: int, div: int):
     """
     Given a video release date (in Unix timestamp format), a comment date (in string format),
     and a divisor, returns the number of weeks between the two dates.
 
     Args:
         video_release (int): The Unix timestamp of the video release date.
-        comment_str (str): The string date of the comment.
+        comment_str_date (int): The Unix timestamp of the comment.
         div (int): The divisor to use when calculating the number of weeks.
         maxi (bool, optional): Whether or not the comment date is already in Unix timestamp format.
             Defaults to False.
@@ -52,15 +55,13 @@ def get_week(video_release, comment_str, div, maxi=False):
         int: The number of weeks between the two dates.
     """
     # convert unix to datetime
-    comment_date = datetime.fromtimestamp(
-        convert_date_unix(comment_str) if maxi == False else comment_str
-    )
+    comment_date = datetime.fromtimestamp(comment_str_date)
     # get difference in days
     diff = comment_date - datetime.fromtimestamp(video_release)
     return diff.days // div
 
 
-def convert_date_unix(string_date):
+def convert_date_unix(string_date: str):
     """
     Converts a string date in the format "%Y-%m-%dT%H:%M:%SZ" to a Unix timestamp.
 
@@ -74,7 +75,7 @@ def convert_date_unix(string_date):
     return int(date_obj.timestamp())
 
 
-def clean_text(text):
+def clean_text(text: str):
     """
     Cleans a block of text by removing newlines, extra whitespace, and HTML tags.
 
@@ -88,7 +89,7 @@ def clean_text(text):
     return pattern.sub("", text)
 
 
-def get_video_info(youtube, video_id):
+def get_video_info(youtube: Resource, video_id: str):
     """
     Given a YouTube video URL, returns a tuple containing the video's title,
     description, and publish date.

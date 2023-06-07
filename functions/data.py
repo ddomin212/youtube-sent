@@ -11,12 +11,13 @@ Functions:
 """
 
 import os
-import pandas as pd
+from typing import Any, Dict, List
 from functions import init_kaggle
 
-def check_first_time(user_email):
+
+def check_first_time(user_email: str):
     """
-    Checks if a user has used the application before by checking if a directory exists 
+    Checks if a user has used the application before by checking if a directory exists
     with the user's email address. If the directory does not exist, it creates it and initializes
     a Kaggle API client for the user.
 
@@ -32,7 +33,8 @@ def check_first_time(user_email):
         init_kaggle(user_email)
         return "yes"
 
-def save_comments_to_csv(comments, user_email):
+
+def save_comments_to_csv(comments: List[Dict[str, Any]], user_email: str):
     """
     Saves a list of comments to a CSV file in the user's directory.
 

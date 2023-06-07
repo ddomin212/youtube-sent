@@ -1,8 +1,15 @@
+from typing import Generator, Any
+from flask import Flask
 from unittest.mock import Mock, patch
 from controllers.history import historyController, showController
 import json
 
-def test_historyController(context, user_session, history_entry):
+
+def test_historyController(
+    context: Generator[Flask, Any, None],
+    user_session: dict[str, dict[str, str]],
+    history_entry: dict[str, Any],
+):
     # Create a mock session object
     session = {"user": {"uid": "user123"}}
 
@@ -13,14 +20,18 @@ def test_historyController(context, user_session, history_entry):
     ]
 
     # Call the historyController function with the mock objects
-    with patch.dict('flask.session', user_session):
+    with patch.dict("flask.session", user_session):
         response = historyController(db)
 
     # Check the response
-    print(response)
-    assert 'Test Name of Video' in response
-    
-def test_showController(context, user_session, history_entry):
+    assert "Test Name of Video" in response
+
+
+def test_showController(
+    context: Generator[Flask, Any, None],
+    user_session: dict[str, dict[str, str]],
+    history_entry: dict[str, Any],
+):
     # Create a mock session object
     session = {"user": {"uid": "user123"}}
 
@@ -31,11 +42,10 @@ def test_showController(context, user_session, history_entry):
     ]
 
     # Call the showController function with the mock objects
-    with patch.dict('flask.session', user_session):
-        response = showController(db, '123')
+    with patch.dict("flask.session", user_session):
+        response = showController(db, "123")
 
     # Check the response
-    print(response)
-    assert 'Test Name of Video' in response
-    assert 'by Test' in response
-    assert 'sounds pretty toxic to me' in response
+    assert "Test Name of Video" in response
+    assert "by Test" in response
+    assert "sounds pretty toxic to me" in response

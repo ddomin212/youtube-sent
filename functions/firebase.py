@@ -1,21 +1,17 @@
 """
 This module contains functions for interacting with Firebase and retrieving user video history.
-
-Functions:
-- get_user_videos(session, request, db): Retrieves the user's video history 
-                                        for a given video ID and type.
-- add_to_firebase(data, video_id, user_uid, db): Adds data to Firebase for a 
-                                                given video ID and user ID.
 """
 
 import json
+from typing import Any, Dict, List
+from flask import Request
+from flask_session import Session
+from google.cloud.firestore import Client
 from utils.npenc import NpEncoder
 from .youtube.scrape_helpers import get_weeks
 
 
-
-
-def get_user_videos(session, request, db):
+def get_user_videos(session: Dict[str, Dict[str, Any]], request: Request, db: Client):
     """
     Retrieves the user's video history for a given video ID and type.
 
@@ -39,7 +35,8 @@ def get_user_videos(session, request, db):
     doc = [doc.to_dict() for doc in history][0]
     return doc, typ
 
-def add_to_firebase(data, video_id, user_uid, db):
+
+def add_to_firebase(data: Dict[str, Any], video_id: str, user_uid: str, db: Client):
     """
     Adds a video document to Firestore for a given video ID and user ID.
 
@@ -56,15 +53,15 @@ def add_to_firebase(data, video_id, user_uid, db):
 
 
 def upload_firebase(
-    video_info,
-    user_email,
-    video_id,
-    db,
-    pred_counts,
-    quest_counts,
-    questions,
-    negatives,
-    comments,
+    video_info: str,
+    user_email: str,
+    video_id: str,
+    db: Client,
+    pred_counts: Dict[str, int],
+    quest_counts: Dict[str, int],
+    questions: List[Dict[str, Any]],
+    negatives: List[Dict[str, Any]],
+    comments: List[Dict[str, Any]],
 ):
     """
     Uploads video data to Firestore for a given video ID and user email.
