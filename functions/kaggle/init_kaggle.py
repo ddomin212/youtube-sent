@@ -64,7 +64,11 @@ def init_kernel(user_email: str):
         "competition_sources": [],
     }
     subprocess.run(
-        ["cp", "toxic.ipynb", f"static/generated/{user_email}/kernel/toxic.ipynb"],
+        [
+            "cp",
+            "toxic.ipynb",
+            f"static/generated/{user_email}/kernel/toxic.ipynb",
+        ],
         check=True,
     )
     json.dump(

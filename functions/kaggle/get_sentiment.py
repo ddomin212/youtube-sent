@@ -7,6 +7,7 @@ Functions:
 """
 import subprocess
 from typing import Any, Dict, List
+
 import pandas as pd
 
 
@@ -18,7 +19,6 @@ def get_counts(predictions: pd.DataFrame):
 
     @return Tuple of integers : 1. Number of questions 2. Number of negatives
     """
-    print(predictions.head(5))
     pred_counts = predictions.negative.value_counts().to_dict()
     quest_counts = predictions.questions.value_counts().to_dict()
     return quest_counts, pred_counts
@@ -52,7 +52,9 @@ def sort_comments(comments: List[Dict[str, Any]], predictions: pd.DataFrame):
     return negatives, questions
 
 
-def get_sentiment(comments: List[Dict[str, Any]], folder_name: str, first_time: str):
+def get_sentiment(
+    comments: List[Dict[str, Any]], folder_name: str, first_time: str
+):
     """
     Given a the comments on a YouTube video,
     return comments tagged with sentiment and their respective counts.
@@ -65,7 +67,8 @@ def get_sentiment(comments: List[Dict[str, Any]], folder_name: str, first_time: 
     """
     # run the bash script
     subprocess.run(
-        ["bash", "functions/kaggle/kaggle.sh", folder_name, first_time], check=True
+        ["bash", "functions/kaggle/kaggle.sh", folder_name, first_time],
+        check=True,
     )
 
     # We get the predicted values from a csv file. It is a bit hacky, but it's free and fast.

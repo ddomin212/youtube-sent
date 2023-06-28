@@ -12,7 +12,9 @@ Functions:
 
 import os
 from typing import Any, Dict, List
-from functions import init_kaggle
+
+import pandas as pd
+from functions.kaggle.init_kaggle import init_kaggle
 
 
 def check_first_time(user_email: str):
@@ -46,5 +48,7 @@ def save_comments_to_csv(comments: List[Dict[str, Any]], user_email: str):
         tuple: A tuple containing the user's video history document and the video type.
     """
     comments_df = pd.DataFrame.from_dict(comments)
-    comments_df.to_csv(f"static/generated/{user_email}/dataset/data.csv", index=False)
+    comments_df.to_csv(
+        f"static/generated/{user_email}/dataset/data.csv", index=False
+    )
     return

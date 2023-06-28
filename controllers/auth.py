@@ -9,9 +9,10 @@ Functions:
     loginController: Logs the user in if successful, or returns an error message if unsuccessful.
 """
 
-from flask import render_template, redirect, session, Request
-from google.cloud.exceptions import GoogleCloudError
 from firebase_admin import auth
+from flask import Request, redirect, render_template, session
+from google.cloud.exceptions import GoogleCloudError
+from utils.message import print_message
 
 
 def registerController(auth: auth, request: Request):
@@ -39,12 +40,7 @@ def registerController(auth: auth, request: Request):
         auth.create_user(email=email, password=password)
         return redirect("/login")
     except GoogleCloudError:
-        return (
-            render_template(
-                "message.html", error_message="User creation failed", status_code=400
-            ),
-            400,
-        )
+        return print_message(500, "Error creating user")
 
 
 def profileController(auth: auth, request: Request):
@@ -67,7 +63,7 @@ def profileController(auth: auth, request: Request):
             user = auth.get_user_by_email(session["user"]["email"])
             auth.update_user(user.uid, display_name=name, email=email)
         except GoogleCloudError:
-            pass
+            return print_message(500, "Error updating user")
         session["user"]["email"] = email
         session["user"]["name"] = name
     return render_template("profile.html", user=session["user"])

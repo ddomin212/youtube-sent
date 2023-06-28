@@ -8,8 +8,9 @@ Functions:
                         for a subscription and redirects the user to the Stripe checkout page.
 """
 import stripe
-from flask import redirect, session, render_template, Request
 from firebase_admin import auth
+from flask import Request, redirect, render_template, session
+from utils.message import print_message
 
 
 def paymentController(url: str):
@@ -36,6 +37,8 @@ def paymentController(url: str):
         success_url=f'{url}/payment-success?session_id={"{CHECKOUT_SESSION_ID}"}',
         cancel_url=f"{url}/cancel",
     )
+    if payment_session is None:
+        return print_message(500, "Error creating Stripe payment session")
     session.get("user")["verificationToken"] = payment_session.id
     print(payment_session.id)
     return redirect(payment_session.url)
@@ -57,21 +60,11 @@ def successController(fbauth: auth, request: Request):
     payment_session_id = request.args.get("session_id")
     print(session["user"])
     if payment_session_id != session["user"]["verificationToken"]:
-        return (
-            render_template(
-                "message.html", error_message="Unauthorized access", status_code=401
-            ),
-            401,
-        )
+        return print_message(500, "Error verifying payment")
     try:
         user = fbauth.get_user_by_email(session.get("user")["email"])
         fbauth.set_custom_user_claims(user.uid, {"tier": "premium"})
         session["user"]["tier"] = "premium"
     except Exception as e:
         print(e)
-    return (
-        render_template(
-            "message.html", error_message="Payment successful", status_code=""
-        ),
-        200,
-    )
+    return print_message(200, "Payment successful")

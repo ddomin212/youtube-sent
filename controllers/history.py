@@ -11,9 +11,11 @@ Functions:
 """
 
 import json
+
 from flask import render_template, session
 from google.cloud.firestore import Client
 from utils.firestore import firebase_query
+from utils.message import print_message
 
 
 def historyController(db: Client):
@@ -32,10 +34,8 @@ def historyController(db: Client):
     user_uid = session["user"]["uid"]
     with firebase_query(db, "history", [("uid", "==", user_uid)]) as data:
         if data is None:
-            return render_template(
-                "message.html",
-                status_code=500,
-                message="Could not retrieve history data. Please try again later.",
+            return print_message(
+                404, "Found no history data. Please try again later."
             )
         json_columns = [
             "questions",

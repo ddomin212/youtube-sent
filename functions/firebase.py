@@ -4,14 +4,17 @@ This module contains functions for interacting with Firebase and retrieving user
 
 import json
 from typing import Any, Dict, List
+
 from flask import Request
-from flask_session import Session
 from google.cloud.firestore import Client
 from utils.npenc import NpEncoder
+
 from .youtube.scrape_helpers import get_weeks
 
 
-def get_user_videos(session: Dict[str, Dict[str, Any]], request: Request, db: Client):
+def get_user_videos(
+    session: Dict[str, Dict[str, Any]], request: Request, db: Client
+):
     """
     Retrieves the user's video history for a given video ID and type.
 
@@ -36,7 +39,9 @@ def get_user_videos(session: Dict[str, Dict[str, Any]], request: Request, db: Cl
     return doc, typ
 
 
-def add_to_firebase(data: Dict[str, Any], video_id: str, user_uid: str, db: Client):
+def add_to_firebase(
+    data: Dict[str, Any], video_id: str, user_uid: str, db: Client
+):
     """
     Adds a video document to Firestore for a given video ID and user ID.
 

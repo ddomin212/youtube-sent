@@ -11,11 +11,12 @@ Functions:
                     retrieves the comments and sentiment analysis data for a
                     YouTube video specified in the request.
 """
-from flask import session, render_template, g, Request
-from google.cloud.firestore import Client
+from flask import Request, g, render_template, session
 from functions import get_comments, get_sentiment
-from functions.firebase import upload_firebase
 from functions.data import check_first_time, save_comments_to_csv
+from functions.firebase import upload_firebase
+from google.cloud.firestore import Client
+from utils.message import print_message
 
 
 def indexController():
@@ -61,12 +62,20 @@ def searchController(request: Request, db: Client):
     user_email = session["user"]["uid"]
     first_time = check_first_time(user_email)
     comments, video_info = get_comments(video_id)
-
+    if comments is None:
+        return print_message(
+            404, "Found no comments. Ensure the video has comments enabled."
+        )
     save_comments_to_csv(comments, user_email)
 
     quest_counts, pred_counts, negatives, questions = get_sentiment(
         comments, user_email, first_time
     )
+
+    if quest_counts is None:
+        return print_message(
+            500, "Could not fetch sentiment data. Please try again later."
+        )
 
     save_comments_to_csv(comments, user_email)
 

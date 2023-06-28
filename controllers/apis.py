@@ -12,10 +12,12 @@ Functions:
                                                                     containing the exported data.
 """
 import json
+
 import pandas as pd
-from flask import jsonify, session, send_file, render_template, Request
-from google.cloud.firestore import Client
+from flask import Request, jsonify, render_template, send_file, session
 from functions.firebase import get_user_videos
+from google.cloud.firestore import Client
+from utils.message import print_message
 
 
 def sessionController(request: Request):
@@ -60,6 +62,8 @@ def chartController(request: Request, db: Client):
         Response: A Flask response object containing the requested chart data.
     """
     doc, typ = get_user_videos(session, request, db)
+    if doc == None:
+        return print_message(404, "No data found for this video")
     json_columns = [
         "questions",
         "comments",
@@ -96,12 +100,7 @@ def exportController(method: str):
     user_email = session["user"]["uid"]
     df = pd.read_csv(f"static/generated/{user_email}/dataset/data.csv")
     if df.empty:
-        return (
-            render_template(
-                "message.html", error_message="No comments to export", status_code=400
-            ),
-            400,
-        )
+        return print_message(404, "No comments found for this video")
     if method == "csv":
         return send_file(
             f"static/generated/{user_email}/dataset/data.csv",
@@ -109,7 +108,9 @@ def exportController(method: str):
             as_attachment=True,
         )
     elif method == "xlsx":
-        df.to_excel(f"static/generated/{user_email}/output/data.xlsx", index=False)
+        df.to_excel(
+            f"static/generated/{user_email}/output/data.xlsx", index=False
+        )
         return send_file(
             f"static/generated/{user_email}/output/data.xlsx",
             mimetype="text/xlsx",
@@ -123,9 +124,4 @@ def exportController(method: str):
             as_attachment=True,
         )
     else:
-        return (
-            render_template(
-                "message.html", error_message="Unauthorized access", status_code=401
-            ),
-            401,
-        )
+        return print_message(400, "Invalid export method")
