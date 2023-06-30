@@ -13,8 +13,8 @@ Functions:
 """
 from flask import Request, g, render_template, session
 from functions import get_comments, get_sentiment
-from functions.data import check_first_time, save_comments_to_csv
-from functions.firebase import upload_firebase
+from utils.controllers import check_first_time, save_comments_to_csv
+from connections.firebase import upload_firebase
 from google.cloud.firestore import Client
 from utils.message import print_message
 

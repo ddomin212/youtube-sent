@@ -5,6 +5,6 @@
 Dockerfile
 .dockerignore
 .env
-kaggle.json
+**/kaggle.json
 /static/generated
 /ytbs

@@ -15,9 +15,10 @@ import json
 
 import pandas as pd
 from flask import Request, jsonify, render_template, send_file, session
-from functions.firebase import get_user_videos
+from connections.firebase import get_user_videos
 from google.cloud.firestore import Client
 from utils.message import print_message
+from utils.controllers import set_user_session, parse_json_cols, export_df
 
 
 def sessionController(request: Request):
@@ -32,19 +33,7 @@ def sessionController(request: Request):
         Tuple[Response, int]: A tuple containing a Flask response object and an
         HTTP status code.
     """
-    name = request.json["name"]
-    uid = request.json["password"]
-    email = request.json["email"]
-    typ = request.json["typ"]
-    tier = request.json["tier"]
-    session["user"] = {
-        "uid": uid,
-        "email": email,
-        "typ": typ,
-        "name": name if name else "User",
-        "tier": tier,
-        "verificationToken": "",
-    }
+    set_user_session(request)
     print("Session set successfully")
     return jsonify({"message": "Session set successfully"}), 200
 
@@ -64,18 +53,7 @@ def chartController(request: Request, db: Client):
     doc, typ = get_user_videos(session, request, db)
     if doc == None:
         return print_message(404, "No data found for this video")
-    json_columns = [
-        "questions",
-        "comments",
-        "negatives",
-        "weeks",
-        "months",
-        "years",
-        "quest_counts",
-        "pred_counts",
-    ]
-    for col in json_columns:
-        doc[col] = json.loads(doc[col])
+    parse_json_cols(doc)
     if typ == "Week":
         return jsonify({"data": doc["weeks"]})
     elif typ == "Month":
@@ -101,27 +79,4 @@ def exportController(method: str):
     df = pd.read_csv(f"static/generated/{user_email}/dataset/data.csv")
     if df.empty:
         return print_message(404, "No comments found for this video")
-    if method == "csv":
-        return send_file(
-            f"static/generated/{user_email}/dataset/data.csv",
-            mimetype="text/csv",
-            as_attachment=True,
-        )
-    elif method == "xlsx":
-        df.to_excel(
-            f"static/generated/{user_email}/output/data.xlsx", index=False
-        )
-        return send_file(
-            f"static/generated/{user_email}/output/data.xlsx",
-            mimetype="text/xlsx",
-            as_attachment=True,
-        )
-    elif method == "json":
-        df.to_json(f"static/generated/{user_email}/output/data.json")
-        return send_file(
-            f"static/generated/{user_email}/output/data.json",
-            mimetype="application/json",
-            as_attachment=True,
-        )
-    else:
-        return print_message(400, "Invalid export method")
+    return export_df(df, method, user_email)

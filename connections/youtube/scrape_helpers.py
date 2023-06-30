@@ -4,7 +4,7 @@ from datetime import datetime
 from googleapiclient.discovery import Resource
 
 
-def get_weeks(comments: List[Dict[str, Any]], video_unix: int, div: int):
+def get_weeks(comments: List[Dict[str, Any]], video_unix: str, div: int):
     """
     Given a list of comments (in dictionary format), a video release date (in Unix timestamp format),
     and a divisor, returns a tuple containing a dictionary of sentiment counts for each week after
@@ -12,7 +12,7 @@ def get_weeks(comments: List[Dict[str, Any]], video_unix: int, div: int):
 
     Args:
         comments (List[Dict[str, Any]]): The list of comments to analyze.
-        video_unix (int): The Unix timestamp of the video release date.
+        video_unix (str): The Unix timestamp of the video release date.
         div (int): The divisor to use when calculating the number of weeks.
 
     Returns:
@@ -39,13 +39,13 @@ def get_weeks(comments: List[Dict[str, Any]], video_unix: int, div: int):
     return weeks, get_week(video_unix, max_date, div)
 
 
-def get_week(video_release: int, comment_str_date: int, div: int):
+def get_week(video_release: str, comment_str_date: int, div: int):
     """
     Given a video release date (in Unix timestamp format), a comment date (in string format),
     and a divisor, returns the number of weeks between the two dates.
 
     Args:
-        video_release (int): The Unix timestamp of the video release date.
+        video_release (str): The Unix timestamp of the video release date.
         comment_str_date (int): The Unix timestamp of the comment.
         div (int): The divisor to use when calculating the number of weeks.
         maxi (bool, optional): Whether or not the comment date is already in Unix timestamp format.
@@ -57,7 +57,7 @@ def get_week(video_release: int, comment_str_date: int, div: int):
     # convert unix to datetime
     comment_date = datetime.fromtimestamp(comment_str_date)
     # get difference in days
-    diff = comment_date - datetime.fromtimestamp(video_release)
+    diff = comment_date - datetime.fromtimestamp(int(video_release))
     return diff.days // div
 
 

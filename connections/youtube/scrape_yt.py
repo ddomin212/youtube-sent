@@ -1,7 +1,7 @@
 import os
 from typing import Any, Dict, List
 from googleapiclient.discovery import build, Resource
-from functions.youtube.scrape_helpers import *
+from connections.youtube.scrape_helpers import *
 
 
 all_comments: List[Dict[str, Any]] = []

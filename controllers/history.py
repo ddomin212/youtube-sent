@@ -14,9 +14,9 @@ import json
 
 from flask import render_template, session
 from google.cloud.firestore import Client
-from utils.firestore import firebase_query
+from connections.firebase import firebase_query
 from utils.message import print_message
-
+from utils.controllers import parse_json_cols
 
 def historyController(db: Client):
     """
@@ -37,23 +37,8 @@ def historyController(db: Client):
             return print_message(
                 404, "Found no history data. Please try again later."
             )
-        json_columns = [
-            "questions",
-            "comments",
-            "negatives",
-            "weeks",
-            "quest_counts",
-            "pred_counts",
-        ]
-        data = [
-            {
-                col: json.loads(doc.get(col, "[]"))
-                if col in json_columns
-                else doc.get(col)
-                for col in doc.keys()
-            }
-            for doc in data
-        ]
+        for doc in data:
+            parse_json_cols(doc)
         return render_template("history.html", history=data)
 
 
@@ -78,22 +63,9 @@ def showController(db: Client, video_id: str):
         db, "history", [("uid", "==", user_uid), ("video_id", "==", video_id)]
     ) as data:
         if data is None:
-            return render_template(
-                "message.html",
-                status_code=500,
-                message="Could not retrieve history data. Please try again later.",
-            )
+            return print_message(404, "Found no history data. Please try again later.")
         doc = data[0]
-        json_columns = [
-            "questions",
-            "comments",
-            "negatives",
-            "weeks",
-            "quest_counts",
-            "pred_counts",
-        ]
-        for col in json_columns:
-            doc[col] = json.loads(doc[col])
+        parse_json_cols(doc)
         return render_template(
             "dash.html",
             questions=doc["questions"],

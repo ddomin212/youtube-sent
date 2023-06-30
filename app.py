@@ -16,7 +16,7 @@ from controllers.payment import paymentController, successController
 from controllers.main import indexController, dashController, searchController
 from controllers.history import historyController, showController
 from controllers.apis import chartController, exportController, sessionController
-
+from utils.message import print_message
 
 app = Flask(__name__)
 load_dotenv()
@@ -228,14 +228,7 @@ def not_found(e):
     Returns:
         The rendered message template.
     """
-    return (
-        render_template(
-            "message.html",
-            error_message="Could not find the page you were looking for",
-            status_code=404,
-        ),
-        404,
-    )
+    return print_message(404, "Page not found")
 
 
 # ==============================

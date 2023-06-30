@@ -3,14 +3,31 @@ This module contains functions for interacting with Firebase and retrieving user
 """
 
 import json
-from typing import Any, Dict, List
+from typing import Any, Dict, List, List, Tuple
+from contextlib import contextmanager
 
-from flask import Request
+from Flask import Request
 from google.cloud.firestore import Client
-from utils.npenc import NpEncoder
+from google.cloud.exceptions import GoogleCloudError
 
+from utils.npenc import NpEncoder
 from .youtube.scrape_helpers import get_weeks
 
+
+
+
+@contextmanager
+def firebase_query(db: Client, collection: str, query: List[Tuple[str, str, Any]]):
+    if isinstance(query, tuple):
+        query = [query]
+    try:
+        docs = db.collection(collection)
+        for q in query:
+            docs = docs.where(*q)
+        docs = docs.stream()
+        yield [doc.to_dict() for doc in docs]
+    except GoogleCloudError:
+        yield None
 
 def get_user_videos(
     session: Dict[str, Dict[str, Any]], request: Request, db: Client
