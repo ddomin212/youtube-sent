@@ -12,10 +12,12 @@ Functions:
                     YouTube video specified in the request.
 """
 from flask import Request, g, render_template, session
-from functions import get_comments, get_sentiment
-from utils.controllers import check_first_time, save_comments_to_csv
-from connections.firebase import upload_firebase
 from google.cloud.firestore import Client
+
+from connections.firebase import upload_firebase
+from connections.kaggle.get_sentiment import get_sentiment
+from connections.youtube.scrape_yt import get_comments
+from utils.controllers import check_first_time, save_comments_to_csv
 from utils.message import print_message
 
 
@@ -56,16 +58,21 @@ def searchController(request: Request, db: Client):
     Returns:
         str: The rendered search template with the retrieved data.
     """
+    # get video comments
     full_url = request.form["url"]
     new_url = full_url.replace("watch?v=", "embed/")
     video_id = full_url.split("=")[1]
+    comments, video_info = get_comments(video_id)
+
+    # get the sentiment from kaggle
     user_email = session["user"]["uid"]
     first_time = check_first_time(user_email)
-    comments, video_info = get_comments(video_id)
+
     if comments is None:
         return print_message(
             404, "Found no comments. Ensure the video has comments enabled."
         )
+
     save_comments_to_csv(comments, user_email)
 
     quest_counts, pred_counts, negatives, questions = get_sentiment(
@@ -79,6 +86,7 @@ def searchController(request: Request, db: Client):
 
     save_comments_to_csv(comments, user_email)
 
+    # upload to firebase
     max_diff, weeks = upload_firebase(
         video_info,
         user_email,
@@ -92,6 +100,7 @@ def searchController(request: Request, db: Client):
     )
     g.loading_complete = True
 
+    # render the template
     return render_template(
         "dash.html",
         questions=questions,

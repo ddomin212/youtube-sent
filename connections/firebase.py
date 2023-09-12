@@ -3,21 +3,22 @@ This module contains functions for interacting with Firebase and retrieving user
 """
 
 import json
-from typing import Any, Dict, List, List, Tuple
 from contextlib import contextmanager
+from typing import Any, Dict, List, Tuple
 
 from Flask import Request
-from google.cloud.firestore import Client
 from google.cloud.exceptions import GoogleCloudError
+from google.cloud.firestore import Client
 
 from utils.npenc import NpEncoder
+
 from .youtube.scrape_helpers import get_weeks
 
 
-
-
 @contextmanager
-def firebase_query(db: Client, collection: str, query: List[Tuple[str, str, Any]]):
+def firebase_query(
+    db: Client, collection: str, query: List[Tuple[str, str, Any]]
+):
     if isinstance(query, tuple):
         query = [query]
     try:
@@ -28,6 +29,7 @@ def firebase_query(db: Client, collection: str, query: List[Tuple[str, str, Any]
         yield [doc.to_dict() for doc in docs]
     except GoogleCloudError:
         yield None
+
 
 def get_user_videos(
     session: Dict[str, Dict[str, Any]], request: Request, db: Client
@@ -97,25 +99,28 @@ def upload_firebase(
         quest_counts (dict): The question counts for the video.
         questions (list): The list of questions asked during the video.
     """
-    weeks, max_diff = get_weeks(comments, video_info[2], 7)
-    months, _ = get_weeks(comments, video_info[2], 30)
-    years, _ = get_weeks(comments, video_info[2], 365)
-    comments = sorted(comments, key=lambda x: x["comment_like_count"])[:15]
-    questions = sorted(questions, key=lambda x: x["comment_like_count"])[:15]
-    negatives = sorted(negatives, key=lambda x: x["comment_like_count"])[:15]
+    data_dict = {}
+    data_dict["weeks"], max_diff = get_weeks(comments, video_info[2], 7)
+    data_dict["months"], _ = get_weeks(comments, video_info[2], 30)
+    data_dict["years"], _ = get_weeks(comments, video_info[2], 365)
+    data_dict["comments"] = sorted(
+        comments, key=lambda x: x["comment_like_count"]
+    )[:15]
+    data_dict["questions"] = sorted(
+        questions, key=lambda x: x["comment_like_count"]
+    )[:15]
+    data_dict["negatives"] = sorted(
+        negatives, key=lambda x: x["comment_like_count"]
+    )[:15]
+    data_dict["pred_counts"] = pred_counts
+    data_dict["quest_counts"] = quest_counts
+    data_dict = {k: json.dumps(v, cls=NpEncoder) for k, v in data_dict.items()}
     data = {
         "uid": user_email,
         "video_id": video_id,
-        "questions": json.dumps(questions, cls=NpEncoder),
-        "comments": json.dumps(comments, cls=NpEncoder),
-        "negatives": json.dumps(negatives, cls=NpEncoder),
-        "weeks": json.dumps(weeks, cls=NpEncoder),
-        "months": json.dumps(months, cls=NpEncoder),
-        "years": json.dumps(years, cls=NpEncoder),
         "max_diff": max_diff,
         "video_info": video_info,
-        "quest_counts": json.dumps(quest_counts, cls=NpEncoder),
-        "pred_counts": json.dumps(pred_counts, cls=NpEncoder),
+        **data_dict,
     }
     add_to_firebase(data, video_id, user_email, db)
-    return max_diff, weeks
+    return max_diff, data_dict["weeks"]

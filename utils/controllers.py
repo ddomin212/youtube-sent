@@ -1,12 +1,15 @@
 import json
 import os
+from typing import Any, Dict, List
 
 import pandas as pd
-from Flask import session, send_file
+from Flask import send_file, session
 
-from utils.message import print_message
-from typing import Any, Dict, List
+from connections.kaggle.get_sentiment import get_sentiment
 from connections.kaggle.init_kaggle import init_kaggle
+from connections.youtube.scrape_yt import get_comments
+from utils.message import print_message
+
 
 def set_user_session(request):
     name = request.json["name"]
@@ -22,6 +25,8 @@ def set_user_session(request):
         "tier": tier,
         "verificationToken": "",
     }
+
+
 def parse_json_cols(doc):
     json_columns = [
         "questions",
@@ -35,6 +40,7 @@ def parse_json_cols(doc):
     ]
     for col in json_columns:
         doc[col] = json.loads(doc[col]) if doc[col] else []
+
 
 def export_df(df, method, user_email):
     if method == "csv":
@@ -98,3 +104,47 @@ def save_comments_to_csv(comments: List[Dict[str, Any]], user_email: str):
         f"static/generated/{user_email}/dataset/data.csv", index=False
     )
     return
+
+
+def get_video_comments(request):
+    full_url = request.form["url"]
+    new_url = full_url.replace("watch?v=", "embed/")
+    video_id = full_url.split("=")[1]
+    comments, video_info = get_comments(video_id)
+    return {
+        "comments": comments,
+        "video_info": video_info,
+        "video_id": video_id,
+    }
+
+
+def get_sentiment_from_comments(comments):
+    # get the sentiment from kaggle
+    user_email = session["user"]["uid"]
+    first_time = check_first_time(user_email)
+
+    if comments is None:
+        return print_message(
+            404, "Found no comments. Ensure the video has comments enabled."
+        )
+
+    save_comments_to_csv(comments, user_email)
+
+    quest_counts, pred_counts, negatives, questions = get_sentiment(
+        comments, user_email, first_time
+    )
+
+    if quest_counts is None:
+        return print_message(
+            500, "Could not fetch sentiment data. Please try again later."
+        )
+
+    save_comments_to_csv(comments, user_email)
+
+    return {
+        "quest_counts": quest_counts,
+        "pred_counts": pred_counts,
+        "negatives": negatives,
+        "questions": questions,
+        "user_email": user_email,
+    }

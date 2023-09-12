@@ -24,6 +24,37 @@ def get_counts(predictions: pd.DataFrame):
     return quest_counts, pred_counts
 
 
+def add_negatives(item, acc, predictions: pd.DataFrame):
+    """add negatives to the list of negatives.
+
+    Args:
+        item: item to add
+        acc: list to add to
+        predictions: dataframe of predictions
+    """
+    sent = predictions[
+        predictions["comment_id"] == item["comment_id"]
+    ].negative.values
+    item["comment_sentiment"] = sent[0] if sent.size > 0 else 0
+    if sent.size > 0 and sent[0] == 1:
+        acc.append(item)
+
+
+def add_questions(item, acc, predictions: pd.DataFrame):
+    """add questions to the list of questions.
+
+    Args:
+        item: item to add
+        acc: list to add to
+        predictions: dataframe of predictions
+    """
+    quest = predictions[
+        predictions["comment_id"] == item["comment_id"]
+    ].questions.values
+    if quest.size > 0 and quest[0] == 1:
+        acc.append(item)
+
+
 def sort_comments(comments: List[Dict[str, Any]], predictions: pd.DataFrame):
     """
     Sort comments by sentiment and questions.
@@ -36,19 +67,8 @@ def sort_comments(comments: List[Dict[str, Any]], predictions: pd.DataFrame):
     negatives, questions = [], []
     # Add comments to the list of comments.
     for item in comments:
-        sent = predictions[
-            predictions["comment_id"] == item["comment_id"]
-        ].negative.values
-        quest = predictions[
-            predictions["comment_id"] == item["comment_id"]
-        ].questions.values
-        item["comment_sentiment"] = sent[0] if sent.size > 0 else 0
-        # Add negatives to negatives list
-        if sent.size > 0 and sent[0] == 1:
-            negatives.append(item)
-        # Add a question to the questions list
-        if quest.size > 0 and quest[0] == 1:
-            questions.append(item)
+        add_negatives(item, negatives, predictions)
+        add_questions(item, questions, predictions)
     return negatives, questions
 
 
