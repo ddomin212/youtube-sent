@@ -1,13 +1,16 @@
-from unittest.mock import patch, MagicMock
-from typing import Generator, Any
+from typing import Any, Generator
+from unittest.mock import MagicMock, patch
+
 import pandas as pd
 import pytest
 from flask import Flask
-from controllers.main import indexController, searchController, dashController
+
+from controllers.main import dashController, indexController, searchController
 
 
-def test_index_controller(
-    context: Generator[Flask, Any, None], user_session: dict[str, dict[str, str]]
+def test_indexController(
+    context: Generator[Flask, Any, None],
+    user_session: dict[str, dict[str, str]],
 ):
     with patch.dict("flask.session", {"user": None}):
         response = indexController()
@@ -18,8 +21,9 @@ def test_index_controller(
         assert "Dashboard" in response
 
 
-def test_dash_controller(
-    context: Generator[Flask, Any, None], user_session: dict[str, dict[str, str]]
+def test_dashController(
+    context: Generator[Flask, Any, None],
+    user_session: dict[str, dict[str, str]],
 ):
     with patch.dict("flask.session", user_session):
         response = dashController()
@@ -27,8 +31,9 @@ def test_dash_controller(
 
 
 @pytest.mark.skip(reason="Taking too long to run")
-def test_search_controller(
-    context: Generator[Flask, Any, None], user_session: dict[str, dict[str, str]]
+def test_searchController(
+    context: Generator[Flask, Any, None],
+    user_session: dict[str, dict[str, str]],
 ):
     request = MagicMock()
     request.form = {"url": "https://www.youtube.com/watch?v=7d9Ao2DMvtA"}

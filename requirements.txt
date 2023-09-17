@@ -8,3 +8,5 @@ pandas
 numpy
 google-api-python-client
 gunicorn
+pytest
+python-dotenv

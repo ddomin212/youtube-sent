@@ -6,7 +6,7 @@ import json
 from contextlib import contextmanager
 from typing import Any, Dict, List, Tuple
 
-from Flask import Request
+from flask import Request
 from google.cloud.exceptions import GoogleCloudError
 from google.cloud.firestore import Client
 

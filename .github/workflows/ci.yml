@@ -1,0 +1,33 @@
+name: Project Tests
+on:
+  push:
+    branches:
+      - wip
+  pull_request:
+    branches:
+      - wip
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Set up directiories and files
+        run: |
+          mkdir /home/runner/.kaggle
+          sudo echo '${{ secrets.KAGGLE_JSON }}' > /home/runner/.kaggle/kaggle.json
+        shell: bash
+      - name: Set up directiories and files
+        run: |
+          sudo echo '${{ secrets.FIREBASE_CREDS }}' > config/app.json
+        shell: bash
+      - name: Test with pytest
+        run: pytest

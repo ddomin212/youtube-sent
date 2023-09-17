@@ -3,7 +3,7 @@ import os
 from typing import Any, Dict, List
 
 import pandas as pd
-from Flask import send_file, session
+from flask import send_file, session
 
 from connections.kaggle.get_sentiment import get_sentiment
 from connections.kaggle.init_kaggle import init_kaggle
