@@ -4,6 +4,6 @@ Dockerfile
 .dockerignore
 .env
 **/kaggle.json
-/static/generated
+/static/generated/**/output
 /env3
 **/__pycache__/**
